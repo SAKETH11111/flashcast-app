@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils" // Adjusted path
 import React, { useEffect, useRef, useState } from "react"
+import { useTheme } from "../../components/theme-provider" 
 
 interface MousePosition {
   x: number
@@ -40,6 +41,10 @@ interface ParticlesProps {
   vx?: number
   vy?: number
 }
+
+const defaultLightModeColor = "#303030" // Dark gray for light mode
+const defaultDarkModeColor = "#E0E0E0" // Light gray for dark mode
+
 function hexToRgb(hex: string): number[] {
   hex = hex.replace("#", "")
 
@@ -64,10 +69,34 @@ const Particles: React.FC<ParticlesProps> = ({
   ease = 50,
   size = 0.4,
   refresh = false,
-  color = "#ffffff",
+  color: overrideColorProp, // Prop to override theme-based colors. Renamed for clarity.
   vx = 0,
   vy = 0,
 }) => {
+  const { theme: currentTheme } = useTheme() 
+
+  // Determine the effective theme
+  let effectiveTheme = currentTheme
+  if (currentTheme === "system") {
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light"
+  }
+
+  // Determine the final particle color
+  let finalParticleColor: string
+  if (overrideColorProp) {
+    // If color prop is provided, it overrides theme-based colors
+    finalParticleColor = overrideColorProp 
+  } else {
+    // Otherwise, use theme-based colors
+    if (effectiveTheme === "dark") {
+      finalParticleColor = defaultDarkModeColor 
+    } else {
+      finalParticleColor = defaultLightModeColor 
+    }
+  }
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const canvasContainerRef = useRef<HTMLDivElement>(null)
   const context = useRef<CanvasRenderingContext2D | null>(null)
@@ -88,7 +117,7 @@ const Particles: React.FC<ParticlesProps> = ({
     return () => {
       window.removeEventListener("resize", initCanvas)
     }
-  }, [color, quantity, staticity, ease, size, vx, vy]) // Added dependencies based on usage
+  }, [finalParticleColor, quantity, staticity, ease, size, vx, vy]) // finalParticleColor is now a key dependency
 
   useEffect(() => {
     onMouseMove()
@@ -168,10 +197,12 @@ const Particles: React.FC<ParticlesProps> = ({
     }
   }
 
-  const rgb = hexToRgb(color)
+  // rgb is now calculated inside drawCircle and animate because particleColor can change
+  // const rgb = hexToRgb(finalParticleColor); // RGB calculation is done in drawCircle
 
   const drawCircle = (circle: Circle, update = false) => {
     if (context.current) {
+      const rgb = hexToRgb(finalParticleColor) // Use the determined finalParticleColor
       const { x, y, translateX, translateY, size, alpha } = circle
       context.current.translate(translateX, translateY)
       context.current.beginPath()
