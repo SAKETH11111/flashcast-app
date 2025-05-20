@@ -6,11 +6,24 @@ A modern React application built with Vite, TypeScript, and Tailwind CSS.
 
 To set up GitHub Pages for this repository:
 
-1. Go to your repository on GitHub
-2. Click on the "Actions" tab
-3. In the left sidebar, click on "Setup GitHub Pages"
-4. Click the "Run workflow" button and select the main branch
-5. Wait for the workflow to complete
+1. Create a Personal Access Token (PAT):
+   - Go to GitHub → Settings → Developer settings → Personal access tokens → Generate new token
+   - Give it a descriptive name like "GitHub Pages Deployment"
+   - Select the following scopes: `repo`, `workflow`, and `admin:org` (for Pages access)
+   - Copy the generated token
+
+2. Add the token to your repository secrets:
+   - Go to your repository → Settings → Secrets and variables → Actions
+   - Create a new repository secret
+   - Name: `PERSONAL_ACCESS_TOKEN`
+   - Value: [paste the token you copied]
+   - Click "Add secret"
+
+3. Run the Setup Workflow:
+   - Go to the "Actions" tab in your repository
+   - In the left sidebar, click on "Setup GitHub Pages"
+   - Click the "Run workflow" button and select the main branch
+   - Wait for the workflow to complete
 
 After the setup workflow completes successfully, the main deployment workflow will automatically deploy your application when you push to the main branch.
 
