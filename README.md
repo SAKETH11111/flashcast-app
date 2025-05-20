@@ -4,15 +4,15 @@ A modern React application built with Vite, TypeScript, and Tailwind CSS.
 
 ## GitHub Pages Setup
 
-Before the GitHub Actions workflow can deploy to GitHub Pages, you need to manually enable GitHub Pages in your repository settings:
+To set up GitHub Pages for this repository:
 
 1. Go to your repository on GitHub
-2. Click on "Settings"
-3. Scroll down to the "Pages" section in the sidebar
-4. Under "Build and deployment", select "GitHub Actions" as the source
-5. Save the changes
+2. Click on the "Actions" tab
+3. In the left sidebar, click on "Setup GitHub Pages"
+4. Click the "Run workflow" button and select the main branch
+5. Wait for the workflow to complete
 
-After enabling GitHub Pages, the workflow will automatically deploy your application when you push to the main branch.
+After the setup workflow completes successfully, the main deployment workflow will automatically deploy your application when you push to the main branch.
 
 ## Development
 
