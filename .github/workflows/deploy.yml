@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -51,11 +53,13 @@ jobs:
 
   deploy:
     environment:
-      name: github-pages
+      name: deployment
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
