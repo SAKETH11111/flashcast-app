@@ -37,8 +37,8 @@ jobs:
       - name: Build
         run: yarn build
       
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      # Note: GitHub Pages must be manually enabled in repository settings
+      # Go to Settings > Pages > Build and deployment > Source > GitHub Actions
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -46,6 +46,8 @@ jobs:
           path: './dist'
 
   deploy:
+    # The github-pages environment name is required by GitHub Actions
+    # Ignore linter errors for this value
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
