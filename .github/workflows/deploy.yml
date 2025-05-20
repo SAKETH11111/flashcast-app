@@ -30,7 +30,9 @@ jobs:
           cache: 'yarn'
       
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          yarn add -D @types/node
       
       - name: Build
         run: yarn build
@@ -45,7 +47,7 @@ jobs:
 
   deploy:
     environment:
-      name: github-pages
+      name: deployment
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
