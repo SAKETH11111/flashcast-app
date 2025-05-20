@@ -16,13 +16,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || github.token }}
+          token: ${{ github.token }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
           enablement: true
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || github.token }}
+          token: ${{ github.token }}
       
       - name: Create empty artifact
         run: |
@@ -38,4 +38,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || github.token }} 
+          token: ${{ github.token }} 
