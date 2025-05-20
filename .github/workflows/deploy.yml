@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || github.token }}
       
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -44,7 +44,7 @@ jobs:
         uses: actions/configure-pages@v4
         with:
           enablement: true
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || github.token }}
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -62,4 +62,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || github.token }} 
