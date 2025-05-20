@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 // import Link from "next/link" // Replaced with <a> for Vite
 import type { LucideIcon } from "lucide-react"
@@ -20,7 +20,7 @@ interface NavBarProps {
 
 export function NavBar({ items, className }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name)
-  const [isMobile, setIsMobile] = useState(false)
+  const [, setIsMobile] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {

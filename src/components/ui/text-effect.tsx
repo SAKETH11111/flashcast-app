@@ -1,12 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import {
-  AnimatePresence,
-  motion,
-  TargetAndTransition,
-  Variants,
-} from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import type { TargetAndTransition, Variants } from 'framer-motion';
 import React from 'react';
 
 type PresetType = 'blur' | 'shake' | 'scale' | 'fade' | 'slide';
