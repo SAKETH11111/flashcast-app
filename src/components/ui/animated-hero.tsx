@@ -8,14 +8,14 @@ import { NavBar } from "./tubelight-navbar";
 const navItems = [
   { name: 'Home', url: '#', icon: Home },
   { name: 'About', url: '#', icon: User },
-  { name: 'Projects', url: '#', icon: Briefcase },
-  { name: 'Resume', url: '#', icon: FileText }
+  { name: 'Features', url: '#', icon: Briefcase },
+  { name: 'Decks', url: '#', icon: FileText }
 ];
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
-    () => ["amazing", "new", "wonderful", "beautiful", "smart"],
+    () => ["interactive", "offline-first", "voice-controlled", "smart", "efficient"],
     []
   );
 
@@ -36,14 +36,9 @@ function Hero() {
         <NavBar items={navItems} />
         <div className="container mx-auto pt-20">
           <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
-            <div>
-              <Button variant="secondary" size="sm" className="gap-4">
-                Read our launch article <MoveRight className="w-4 h-4" />
-              </Button>
-            </div>
             <div className="flex gap-4 flex-col">
               <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
-                <span className="text-black dark:text-white">This is something</span>
+                <span className="text-black dark:text-white">Flashcast: Learning</span>
                 <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                   &nbsp;
                   {titles.map((title, index) => (
@@ -71,18 +66,12 @@ function Hero() {
               </h1>
 
               <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">
-                Managing a small business today is already tough. Avoid further
-                complications by ditching outdated, tedious trade methods. Our
-                goal is to streamline SMB trade, making it easier and faster than
-                ever.
+                Revolutionize your learning with voice-controlled flashcards. Speak a term, and if it matches, the card flips! Enjoy optional text-to-speech for answers. Flashcast runs in your browser, offering offline access and syncs your decks with Supabase when you're back online.
               </p>
             </div>
             <div className="flex flex-row gap-3">
-              <Button size="lg" className="gap-4" variant="outline">
-                Jump on a call <PhoneCall className="w-4 h-4" />
-              </Button>
               <Button size="lg" className="gap-4">
-                Sign up here <MoveRight className="w-4 h-4" />
+                Get Started <MoveRight className="w-4 h-4" />
               </Button>
             </div>
           </div>
