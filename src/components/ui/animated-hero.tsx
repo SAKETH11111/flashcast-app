@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MoveRight, PhoneCall, Home, User, Briefcase, FileText } from "lucide-react";
+import { MoveRight, Home, User, Briefcase, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavBar } from "./tubelight-navbar";
 // import { AuroraBackground } from "./aurora-background"; // Removed AuroraBackground import
