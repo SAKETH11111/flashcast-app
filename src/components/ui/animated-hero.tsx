@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, Home, User, Briefcase, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { NavBar } from "./tubelight-navbar";
 // import { AuroraBackground } from "./aurora-background"; // Removed AuroraBackground import
 
@@ -69,10 +68,10 @@ function Hero() {
                 Revolutionize your learning with voice-controlled flashcards. Speak a term, and if it matches, the card flips! Enjoy optional text-to-speech for answers. Flashcast runs in your browser, offering offline access and syncs your decks with Supabase when you're back online.
               </p>
             </div>
-            <div className="flex flex-row gap-3">
-              <Button size="lg" className="gap-4">
-                Get Started <MoveRight className="w-4 h-4" />
-              </Button>
+            <div className="flex flex-row gap-3 relative z-50 mt-6">
+              <button className="button flashcast-btn" onClick={() => alert('Button clicked!')}>
+                Get Started <MoveRight className="inline-block w-4 h-4 ml-2" />
+              </button>
             </div>
           </div>
         </div>
