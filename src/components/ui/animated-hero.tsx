@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, Home, User, Briefcase, FileText } from "lucide-react";
 import { NavBar } from "./tubelight-navbar";
-// import { AuroraBackground } from "./aurora-background"; // Removed AuroraBackground import
 
 const navItems = [
   { name: 'Home', url: '#', icon: Home },
@@ -14,7 +13,7 @@ const navItems = [
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
-    () => ["interactive", "offline-first", "voice-controlled", "smart", "efficient"],
+    () => ["interactive", "browser-based", "voice-controlled", "smart", "efficient"],
     []
   );
 
@@ -65,7 +64,7 @@ function Hero() {
               </h1>
 
               <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">
-                Revolutionize your learning with voice-controlled flashcards. Speak a term, and if it matches, the card flips! Enjoy optional text-to-speech for answers. Flashcast runs in your browser, offering offline access and syncs your decks with Supabase when you're back online.
+                Revolutionize your learning with voice-controlled flashcards. Simply speak a term, and if it matches, the card flips to reveal the answer! Flashcast makes learning interactive, efficient, and fun in your browser.
               </p>
             </div>
             <div className="flex flex-row gap-3 relative z-50 mt-6">
