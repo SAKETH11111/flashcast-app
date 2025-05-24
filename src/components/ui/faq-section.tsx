@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ChevronDown, BookOpen, Headphones, Settings, CreditCard, HelpCircle } from "lucide-react";
+import { Search, BookOpen, Headphones, Settings, CreditCard, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Accordion,

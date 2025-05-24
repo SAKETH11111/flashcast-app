@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MoveRight, Mic } from 'lucide-react';
+import { MoveRight } from 'lucide-react';
 import MagneticButton from './magnetic-button';
 import FloatingElements from './floating-elements';
 
