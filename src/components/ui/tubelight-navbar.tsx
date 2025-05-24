@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-// import Link from "next/link" // Replaced with <a> for Vite
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { ThemeToggleButton } from "./theme-toggle-button" // Import the toggle button
+import { ThemeToggleButton } from "./theme-toggle-button"
 
 interface NavItem {
   name: string
@@ -35,21 +34,21 @@ export function NavBar({ items, className }: NavBarProps) {
   return (
     <div
       className={cn(
-        "fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-6",
+        "fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-6 pointer-events-none",
         className,
       )}
     >
-      <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
+      <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg pointer-events-auto">
         {items.map((item) => {
           const Icon = item.icon
           const isActive = activeTab === item.name
 
           return (
-            <a // Replaced Link with a
+            <a
               key={item.name}
-              href={item.url} // Standard href
+              href={item.url}
               onClick={(e) => {
-                e.preventDefault(); // Prevent default anchor behavior if it's just for client-side state
+                e.preventDefault();
                 setActiveTab(item.name);
               }}
               className={cn(
@@ -83,7 +82,7 @@ export function NavBar({ items, className }: NavBarProps) {
             </a>
           )
         })}
-        <div className="px-2"> {/* Added a little padding for the toggle button */}
+        <div className="px-2">
           <ThemeToggleButton />
         </div>
       </div>

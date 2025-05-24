@@ -53,8 +53,39 @@ export default {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
+  		},
+  		animation: {
+  			'spin-slow': 'spin 3s linear infinite',
+  			'gradient-x': 'gradient-x 3s ease infinite',
+  			'draw-border': 'draw-border 1s ease-in-out forwards',
+  		},
+  		keyframes: {
+  			'gradient-x': {
+  				'0%, 100%': {
+  					'background-position': '0% 50%'
+  				},
+  				'50%': {
+  					'background-position': '100% 50%'
+  				},
+  			},
+  			'draw-border': {
+  				'0%': {
+  					'clip-path': 'polygon(0 0, 0 0, 0 100%, 0 100%)'
+  				},
+  				'25%': {
+  					'clip-path': 'polygon(0 0, 100% 0, 100% 0, 0 0)'
+  				},
+  				'50%': {
+  					'clip-path': 'polygon(0 0, 100% 0, 100% 100%, 100% 100%)'
+  				},
+  				'75%': {
+  					'clip-path': 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+  				},
+  				'100%': {
+  					'clip-path': 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+  				},
+  			},
   		}
-      // Removed Aurora animation and keyframes
   	}
   },
   plugins: [require("tailwindcss-animate")], // Removed addVariablesForColors plugin

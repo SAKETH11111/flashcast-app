@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, Home, User, Briefcase, FileText } from "lucide-react";
 import { NavBar } from "./tubelight-navbar";
+import { FeatureBentoGrid } from "./FeatureBentoGrid";
 
 const navItems = [
   { name: 'Home', url: '#', icon: Home },
@@ -29,12 +30,11 @@ function Hero() {
   }, [titleNumber, titles]);
 
   return (
-    // <AuroraBackground> {/* AuroraBackground wrapper removed */}
-      <div className="w-full relative"> {/* z-10 might not be needed anymore */}
+      <div className="w-full relative">
         <NavBar items={navItems} />
-        <div className="container mx-auto pt-20">
-          <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
-            <div className="flex gap-4 flex-col">
+        <div className="container mx-auto pt-10 md:pt-20">
+          <div className="flex flex-col items-center justify-center gap-8 py-16 md:py-24 lg:py-32 min-h-[calc(80vh-var(--navbar-height,80px))]">
+            <div className="flex gap-4 flex-col items-center">
               <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
                 <span className="text-black dark:text-white">Flashcast: Learning</span>
                 <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
@@ -73,9 +73,18 @@ function Hero() {
               </button>
             </div>
           </div>
+
+          {/* Image Placeholder Section */}
+          <div className="py-12 md:py-16 lg:py-20 text-center">
+            <div className="bg-muted/50 dark:bg-muted/20 w-full max-w-4xl mx-auto h-64 md:h-80 lg:h-96 rounded-lg flex items-center justify-center border border-border">
+              <p className="text-muted-foreground">App Image Placeholder</p>
+            </div>
+          </div>
+
         </div>
+        {/* Feature Bento Grid Section - now outside the main hero text container but still within the page flow */}
+        <FeatureBentoGrid />
       </div>
-    // </AuroraBackground>
   );
 }
 
