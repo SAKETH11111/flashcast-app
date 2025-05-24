@@ -58,6 +58,8 @@ export default {
   			'spin-slow': 'spin 3s linear infinite',
   			'gradient-x': 'gradient-x 3s ease infinite',
   			'draw-border': 'draw-border 1s ease-in-out forwards',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
   		keyframes: {
   			'gradient-x': {
@@ -66,7 +68,7 @@ export default {
   				},
   				'50%': {
   					'background-position': '100% 50%'
-  				},
+  				}
   			},
   			'draw-border': {
   				'0%': {
@@ -83,8 +85,24 @@ export default {
   				},
   				'100%': {
   					'clip-path': 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-  				},
+  				}
   			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
   		}
   	}
   },

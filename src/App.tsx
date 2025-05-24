@@ -2,6 +2,9 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Hero } from './components/ui/animated-hero';
 import { Particles } from './components/ui/particles';
+import TestimonialsSection from './components/ui/testimonials-section';
+import FAQSection from './components/ui/faq-section';
+import CTASection from './components/ui/cta-section';
 
 function App() {
   return (
@@ -30,6 +33,9 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <TestimonialsSection />
+      <CTASection />
+      <FAQSection />
     </>
   );
 }
