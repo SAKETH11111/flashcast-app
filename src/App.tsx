@@ -6,6 +6,7 @@ import TestimonialsSection from './components/ui/testimonials-section';
 import FAQSection from './components/ui/faq-section';
 import CTASection from './components/ui/cta-section';
 import { Footer } from './components/ui/footer-section';
+import ScrollToTopButton from './components/ui/scroll-to-top-button';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
           </Routes>
         </div>
+        <ScrollToTopButton />
       </div>
     </Router>
   );
