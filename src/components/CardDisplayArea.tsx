@@ -1,5 +1,5 @@
 import React from 'react';
-import Flashcard from './Flashcard'; // Import the Flashcard component
+import Flashcard from './Flashcard';
 
 const CardDisplayArea: React.FC = () => {
   const mockTerm = "Hello World";
@@ -7,7 +7,6 @@ const CardDisplayArea: React.FC = () => {
 
   return (
     <div className="flex-grow flex items-center justify-center p-4">
-      {/* Render the Flashcard component with mock data */}
       <Flashcard term={mockTerm} definition={mockDefinition} />
     </div>
   );

@@ -17,7 +17,6 @@ const TestimonialsSection = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center justify-center max-w-4xl mx-auto text-center"
         >
-          {/* Badge */}
           <motion.div 
             className="inline-flex items-center gap-2 border border-border bg-muted/50 py-2 px-4 rounded-full text-sm font-medium text-muted-foreground mb-6"
             whileHover={{ scale: 1.05 }}
@@ -27,7 +26,6 @@ const TestimonialsSection = () => {
             Student Testimonials
           </motion.div>
 
-          {/* Main heading */}
           <motion.h2 
             className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground dark:text-white"
             initial={{ opacity: 0, y: 20 }}
@@ -38,7 +36,6 @@ const TestimonialsSection = () => {
             Loved by learners worldwide
           </motion.h2>
 
-          {/* Subtitle */}
           <motion.p 
             className="text-lg md:text-xl text-muted-foreground mt-6 max-w-2xl leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
@@ -49,7 +46,6 @@ const TestimonialsSection = () => {
             Join thousands of students who've revolutionized their learning with FlashCast's AI-powered flashcard system.
           </motion.p>
 
-          {/* Stats */}
           <motion.div 
             className="flex flex-wrap justify-center gap-8 mt-8 mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -72,7 +68,6 @@ const TestimonialsSection = () => {
           </motion.div>
         </motion.div>
 
-        {/* Testimonials columns */}
         <motion.div 
           className="flex justify-center gap-6 mt-16 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[700px] overflow-hidden"
           initial={{ opacity: 0 }}

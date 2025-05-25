@@ -13,24 +13,18 @@ export default function CTASection() {
     
     setIsLoading(true);
     
-    // Simulate loading
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Navigate to login page (in a real app, you'd use React Router)
     window.location.href = '/login';
     
     setIsLoading(false);
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
-      {/* Simple gradient background to match theme */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       
-      {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
         <div className="relative">
-          {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -51,7 +45,6 @@ export default function CTASection() {
             </p>
           </motion.div>
 
-          {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -72,14 +65,12 @@ export default function CTASection() {
             </div>
           </motion.div>
 
-          {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="relative flex justify-center"
           >
-            {/* Floating Elements around button */}
             <div className="relative">
               <FloatingElements isHovering={isHovering} />
               
@@ -91,14 +82,14 @@ export default function CTASection() {
                 className="button flashcast-btn relative z-10"
               >
                 {isLoading ? (
-                  <>
+                  <div className="flex items-center justify-center">
                     <div className="flex items-center gap-1 mr-2">
-                      <div className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]" />
-                      <div className="h-1.5 w-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]" />
-                      <div className="h-1.5 w-1.5 bg-white rounded-full animate-bounce" />
+                      <div className="h-2 w-2 bg-current rounded-full animate-bounce [animation-delay:-0.3s]" />
+                      <div className="h-2 w-2 bg-current rounded-full animate-bounce [animation-delay:-0.15s]" />
+                      <div className="h-2 w-2 bg-current rounded-full animate-bounce" />
                     </div>
-                    Loading...
-                  </>
+                    <span>Loading...</span>
+                  </div>
                 ) : (
                   <>
                     Get Started 
@@ -109,7 +100,6 @@ export default function CTASection() {
             </div>
           </motion.div>
 
-          {/* Subtext */}
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}

@@ -17,12 +17,11 @@ const floatingIcons = [
 ];
 
 export default function FloatingElements({ isHovering }: FloatingElementsProps) {
-  const radius = 120; // Increased radius to avoid button overlap
+  const radius = 150;
 
   return (
     <div className="absolute inset-0 pointer-events-none">
       {floatingIcons.map(({ icon: Icon, delay, angle }, index) => {
-        // Convert angle to radians and calculate position
         const radian = (angle * Math.PI) / 180;
         const x = Math.cos(radian) * radius;
         const y = Math.sin(radian) * radius;
@@ -30,7 +29,7 @@ export default function FloatingElements({ isHovering }: FloatingElementsProps) 
         return (
           <motion.div
             key={index}
-            className="absolute top-1/2 left-1/2 z-20"
+            className="absolute top-1/2 left-1/2 z-0"
             initial={{ 
               x: 0, 
               y: 0, 

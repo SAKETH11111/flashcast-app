@@ -1,9 +1,8 @@
 import React from "react";
-import { cn } from "@/lib/utils"; // Assuming @ is configured for src (it is)
+import { cn } from "@/lib/utils";
 
 interface FeatureCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
-  // className is inherited from HTMLAttributes
 }
 
 const FeatureCard = ({ children, className, ...props }: FeatureCardProps) => {
@@ -23,15 +22,11 @@ const FeatureCard = ({ children, className, ...props }: FeatureCardProps) => {
   );
 };
 
-// FeatureTitle and FeatureDescription will also be created as separate components
-// For now, they can be simple styled p tags or h tags within the skeleton components.
-// Or, create them as separate files if preferred for modularity.
-
 const FeatureTitle = ({ children, className }: { children?: React.ReactNode, className?: string }) => {
   return (
     <h3 
       className={cn(
-        "text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-2 md:mb-3", // Themed text, adjusted margin
+        "text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-2 md:mb-3",
         className
       )}
     >
@@ -44,7 +39,7 @@ const FeatureDescription = ({ children, className }: { children?: React.ReactNod
   return (
     <p 
       className={cn(
-        "text-sm md:text-base text-muted-foreground leading-relaxed", // Themed text
+        "text-sm md:text-base text-muted-foreground leading-relaxed",
         className
       )}
     >

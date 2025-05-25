@@ -5,6 +5,7 @@ import { Particles } from './components/ui/particles';
 import TestimonialsSection from './components/ui/testimonials-section';
 import FAQSection from './components/ui/faq-section';
 import CTASection from './components/ui/cta-section';
+import { Footer } from './components/ui/footer-section';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function HomePage() {
       <TestimonialsSection />
       <CTASection />
       <FAQSection />
+      <Footer />
     </>
   );
 }

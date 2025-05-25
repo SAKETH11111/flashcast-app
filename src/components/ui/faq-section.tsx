@@ -109,16 +109,13 @@ const FAQSection = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
-  // Filter FAQs based on search and category
   const filteredFAQs = useMemo(() => {
     let filtered = faqData;
 
-    // Filter by category
     if (selectedCategory !== "all") {
       filtered = filtered.filter(faq => faq.category === selectedCategory);
     }
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(faq => 
@@ -146,7 +143,6 @@ const FAQSection = () => {
   return (
     <section className="py-20 relative overflow-hidden">
       <div className="container mx-auto px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -171,7 +167,6 @@ const FAQSection = () => {
           </p>
         </motion.div>
 
-        {/* Search and Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -179,7 +174,6 @@ const FAQSection = () => {
           viewport={{ once: true }}
           className="mb-12"
         >
-          {/* Search Bar */}
           <div className="relative max-w-md mx-auto mb-8">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <input
@@ -191,7 +185,6 @@ const FAQSection = () => {
             />
           </div>
 
-          {/* Category Pills */}
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => {
               const Icon = category.icon;
@@ -203,20 +196,20 @@ const FAQSection = () => {
                   onClick={() => setSelectedCategory(category.id)}
                   className={cn(
                     "relative inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 transition-all duration-300",
-                    isActive 
-                      ? "border-primary bg-primary/10 text-primary" 
-                      : "border-border hover:border-primary/50 text-muted-foreground hover:text-foreground"
+                    isActive
+                      ? "border-primary bg-primary/10 text-primary hover:border-green-500 dark:hover:border-yellow-400"
+                      : "bg-muted border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground hover:border-green-500 dark:hover:border-yellow-400"
                   )}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Icon className={cn("w-4 h-4", isActive ? category.color : "")} />
+                  <Icon className={cn("w-4 h-4", category.color)} />
                   <span className="text-sm font-medium">{category.name}</span>
                   
                   {isActive && (
                     <motion.div
                       layoutId="categoryIndicator"
-                      className="absolute -bottom-2 left-0 right-0 mx-auto w-8 h-1 bg-primary rounded-b-full"
+                      className="absolute -bottom-2 left-0 right-0 mx-auto w-8 h-1 bg-foreground/70 dark:bg-primary rounded-b-full"
                       initial={false}
                       transition={{
                         type: "spring",
@@ -231,14 +224,13 @@ const FAQSection = () => {
           </div>
         </motion.div>
 
-        {/* FAQ Grid - Split Screen Layout */}
         <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {/* Questions Side */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
+            className="bg-card p-6 rounded-3xl"
           >
             <h3 className="text-xl font-semibold text-foreground dark:text-white mb-6">
               Questions ({filteredFAQs.length})
@@ -255,8 +247,8 @@ const FAQSection = () => {
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
                     <AccordionItem value={`item-${index}`} className="border-border/50">
-                      <AccordionTrigger className="text-left hover:no-underline group">
-                        <span className="text-sm md:text-base font-medium group-hover:text-primary transition-colors">
+                      <AccordionTrigger className="bg-transparent hover:bg-accent focus-visible:bg-accent text-left hover:no-underline group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        <span className="text-sm md:text-base font-medium text-foreground group-hover:text-primary transition-colors">
                           {highlightText(faq.question, searchQuery)}
                         </span>
                       </AccordionTrigger>
@@ -272,7 +264,6 @@ const FAQSection = () => {
             </Accordion>
           </motion.div>
 
-          {/* Answers Side */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -286,7 +277,7 @@ const FAQSection = () => {
             
             <div className="min-h-[400px] p-6 rounded-3xl bg-gradient-to-b dark:from-neutral-900 from-neutral-100 dark:to-neutral-950 to-white border-2 border-transparent">
               <AnimatePresence mode="wait">
-                {expandedItem !== null && (
+                {expandedItem ? (
                   <motion.div
                     key={expandedItem}
                     initial={{ opacity: 0, y: 20 }}
@@ -323,28 +314,28 @@ const FAQSection = () => {
                       );
                     })()}
                   </motion.div>
+                ) : (
+                  <motion.div
+                    key="placeholder"
+                    initial={{ opacity: 0, y: 20 }} 
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }} 
+                    className="flex items-center justify-center h-full text-center"
+                  >
+                    <div>
+                      <HelpCircle className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+                      <p className="text-muted-foreground">
+                        Select a question to see the detailed answer
+                      </p>
+                    </div>
+                  </motion.div>
                 )}
               </AnimatePresence>
-              
-              {expandedItem === null && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex items-center justify-center h-full text-center"
-                >
-                  <div>
-                    <HelpCircle className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
-                    <p className="text-muted-foreground">
-                      Select a question to see the detailed answer
-                    </p>
-                  </div>
-                </motion.div>
-              )}
             </div>
           </motion.div>
         </div>
 
-        {/* No Results */}
         <AnimatePresence>
           {filteredFAQs.length === 0 && (
             <motion.div

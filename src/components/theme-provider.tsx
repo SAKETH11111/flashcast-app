@@ -42,8 +42,6 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
-      // The document class is set to systemTheme, but our state `theme` remains "system".
-      // The toggle component will need to check window.matchMedia if theme is "system".
       return;
     }
 

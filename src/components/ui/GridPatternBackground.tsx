@@ -3,7 +3,6 @@
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 
-// GridPattern component from the user's example
 export function GridPattern({ width, height, x, y, squares, className, ...props }: any) {
   const patternId = useId();
 
@@ -45,8 +44,6 @@ export function GridPattern({ width, height, x, y, squares, className, ...props 
   );
 }
 
-// Grid component (renamed to GridPatternBackground to avoid conflict if there's another Grid component)
-// This will be the component imported into cards.
 interface GridPatternBackgroundProps {
   pattern?: number[][];
   size?: number;

@@ -70,7 +70,6 @@ export const TestimonialsColumn = (props: {
   );
 };
 
-// FlashCast testimonials data
 export const testimonials = [
   {
     text: "FlashCast transformed my study routine! The voice-driven flashcards make reviewing so much more engaging and effective.",

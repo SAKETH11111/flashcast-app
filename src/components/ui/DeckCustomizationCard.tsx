@@ -47,7 +47,6 @@ const DeckCustomizationCard = ({ className }: DeckCustomizationCardProps) => {
           <span className="text-xs text-muted-foreground">Themes, Fonts, Colors & More</span>
         </div>
       </div>
-      {/* The GridPatternBackground is already a child of the main motion.div */}
     </motion.div>
   );
 };

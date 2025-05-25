@@ -3,10 +3,8 @@ import { motion } from 'framer-motion';
 export default function AuroraBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Base dark gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black" />
       
-      {/* Animated aurora layers */}
       <motion.div
         className="absolute inset-0 opacity-30"
         animate={{
@@ -40,7 +38,6 @@ export default function AuroraBackground() {
         }}
       />
       
-      {/* Shimmer overlay */}
       <motion.div
         className="absolute inset-0 opacity-10"
         animate={{
@@ -57,7 +54,6 @@ export default function AuroraBackground() {
         }}
       />
       
-      {/* Stars effect */}
       <div className="absolute inset-0">
         {Array.from({ length: 50 }).map((_, i) => (
           <motion.div

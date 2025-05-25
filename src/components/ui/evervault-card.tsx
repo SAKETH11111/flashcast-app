@@ -113,5 +113,3 @@ export const generateRandomString = (length: number) => {
   }
   return result;
 };
-
-// Generic Icon component from example is omitted as we use Lucide.

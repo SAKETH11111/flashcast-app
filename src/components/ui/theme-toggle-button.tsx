@@ -2,13 +2,12 @@
 
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
-import { useTheme } from "../theme-provider" // Use our ThemeProvider
-import { Toggle } from "./toggle" // Use our Toggle primitive
+import { useTheme } from "../theme-provider"
+import { Toggle } from "./toggle"
 
 export function ThemeToggleButton() {
   const { theme, setTheme } = useTheme()
 
-  // Determine the effective theme if system is selected
   const [effectiveTheme, setEffectiveTheme] = React.useState(theme)
 
   React.useEffect(() => {
@@ -20,7 +19,6 @@ export function ThemeToggleButton() {
     }
   }, [theme]);
 
-  // Handle theme changes from system preference
   React.useEffect(() => {
     if (theme !== "system") return;
 
@@ -36,7 +34,7 @@ export function ThemeToggleButton() {
 
   const toggleTheme = () => {
     const newTheme = effectiveTheme === "dark" ? "light" : "dark";
-    setTheme(newTheme); // This will update LS and the class on <html>
+    setTheme(newTheme);
   }
 
   return (

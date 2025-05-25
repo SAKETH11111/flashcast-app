@@ -23,6 +23,7 @@
     "gsap": "^3.13.0",
     "lucide-react": "^0.511.0",
     "motion": "^12.12.2",
+    "motion-plus": "^0.1.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",

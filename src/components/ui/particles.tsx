@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils" // Adjusted path
+import { cn } from "@/lib/utils"
 import React, { useEffect, useRef, useState } from "react"
 import { useTheme } from "../../components/theme-provider" 
 
@@ -9,7 +9,7 @@ interface MousePosition {
   y: number
 }
 
-function useMousePosition(): MousePosition { // Renamed to follow hook naming conventions
+function useMousePosition(): MousePosition {
   const [mousePosition, setMousePosition] = useState<MousePosition>({
     x: 0,
     y: 0,
@@ -42,8 +42,8 @@ interface ParticlesProps {
   vy?: number
 }
 
-const defaultLightModeColor = "#303030" // Dark gray for light mode
-const defaultDarkModeColor = "#E0E0E0" // Light gray for dark mode
+const defaultLightModeColor = "#303030"
+const defaultDarkModeColor = "#E0E0E0"
 
 function hexToRgb(hex: string): number[] {
   hex = hex.replace("#", "")
@@ -69,13 +69,13 @@ const Particles: React.FC<ParticlesProps> = ({
   ease = 50,
   size = 0.4,
   refresh = false,
-  color: overrideColorProp, // Prop to override theme-based colors. Renamed for clarity.
+  color: overrideColorProp,
   vx = 0,
   vy = 0,
 }) => {
   const { theme: currentTheme } = useTheme() 
 
-  // Determine the effective theme
+
   let effectiveTheme = currentTheme
   if (currentTheme === "system") {
     effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -83,13 +83,10 @@ const Particles: React.FC<ParticlesProps> = ({
       : "light"
   }
 
-  // Determine the final particle color
   let finalParticleColor: string
   if (overrideColorProp) {
-    // If color prop is provided, it overrides theme-based colors
     finalParticleColor = overrideColorProp 
   } else {
-    // Otherwise, use theme-based colors
     if (effectiveTheme === "dark") {
       finalParticleColor = defaultDarkModeColor 
     } else {
@@ -101,7 +98,7 @@ const Particles: React.FC<ParticlesProps> = ({
   const canvasContainerRef = useRef<HTMLDivElement>(null)
   const context = useRef<CanvasRenderingContext2D | null>(null)
   const circles = useRef<Circle[]>([])
-  const mousePosition = useMousePosition() // Using the hook
+  const mousePosition = useMousePosition()
   const mouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const canvasSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 })
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
@@ -117,7 +114,7 @@ const Particles: React.FC<ParticlesProps> = ({
     return () => {
       window.removeEventListener("resize", initCanvas)
     }
-  }, [finalParticleColor, quantity, staticity, ease, size, vx, vy]) // finalParticleColor is now a key dependency
+  }, [finalParticleColor, quantity, staticity, ease, size, vx, vy])
 
   useEffect(() => {
     onMouseMove()
@@ -197,12 +194,9 @@ const Particles: React.FC<ParticlesProps> = ({
     }
   }
 
-  // rgb is now calculated inside drawCircle and animate because particleColor can change
-  // const rgb = hexToRgb(finalParticleColor); // RGB calculation is done in drawCircle
-
   const drawCircle = (circle: Circle, update = false) => {
     if (context.current) {
-      const rgb = hexToRgb(finalParticleColor) // Use the determined finalParticleColor
+      const rgb = hexToRgb(finalParticleColor)
       const { x, y, translateX, translateY, size, alpha } = circle
       context.current.translate(translateX, translateY)
       context.current.beginPath()
@@ -252,12 +246,11 @@ const Particles: React.FC<ParticlesProps> = ({
   const animate = () => {
     clearContext()
     circles.current.forEach((circle: Circle, i: number) => {
-      // Handle the alpha value
       const edge = [
-        circle.x + circle.translateX - circle.size, // distance from left edge
-        canvasSize.current.w - circle.x - circle.translateX - circle.size, // distance from right edge
-        circle.y + circle.translateY - circle.size, // distance from top edge
-        canvasSize.current.h - circle.y - circle.translateY - circle.size, // distance from bottom edge
+        circle.x + circle.translateX - circle.size,
+        canvasSize.current.w - circle.x - circle.translateX - circle.size,
+        circle.y + circle.translateY - circle.size,
+        canvasSize.current.h - circle.y - circle.translateY - circle.size,
       ]
       const closestEdge = edge.reduce((a, b) => Math.min(a, b))
       const remapClosestEdge = parseFloat(
@@ -282,19 +275,15 @@ const Particles: React.FC<ParticlesProps> = ({
 
       drawCircle(circle, true)
 
-      // circle gets out of the canvas
       if (
         circle.x < -circle.size ||
         circle.x > canvasSize.current.w + circle.size ||
         circle.y < -circle.size ||
         circle.y > canvasSize.current.h + circle.size
       ) {
-        // remove the circle from the array
         circles.current.splice(i, 1)
-        // create a new circle
         const newCircle = circleParams()
         drawCircle(newCircle)
-        // update the circle position
       }
     })
     window.requestAnimationFrame(animate)
@@ -302,7 +291,7 @@ const Particles: React.FC<ParticlesProps> = ({
 
   return (
     <div
-      className={cn("pointer-events-none absolute inset-0 -z-10", className)} // Added absolute, inset-0, -z-10
+      className={cn("pointer-events-none absolute inset-0 -z-10", className)}
       ref={canvasContainerRef}
       aria-hidden="true"
     >
