@@ -1,46 +1,39 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Hero } from './components/ui/animated-hero';
-import { Particles } from './components/ui/particles';
-import TestimonialsSection from './components/ui/testimonials-section';
-import FAQSection from './components/ui/faq-section';
-import CTASection from './components/ui/cta-section';
-import { Footer } from './components/ui/footer-section';
-import ScrollToTopButton from './components/ui/scroll-to-top-button';
+import { Layout } from './components/Layout';
+
+// Page imports
+import HomePage from './pages/HomePage';
+import FeaturesPage from './pages/FeaturesPage';
+import PricingPage from './pages/PricingPage';
+import AboutPage from './pages/AboutPage';
+import BlogPage from './pages/BlogPage';
+import ContactPage from './pages/ContactPage';
+import DocsPage from './pages/DocsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 function App() {
   return (
     <Router basename="/flashcast-app">
-      <div className="relative min-h-screen w-full overflow-hidden">
-        <Particles
-          className="fixed inset-0 z-0" 
-          quantity={300} 
-          size={0.4}
-          vx={0.05}
-          vy={0.05}
-          ease={50}
-          staticity={30} 
-        />
-        <div className="relative z-10">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </div>
-        <ScrollToTopButton />
-      </div>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/docs" element={<DocsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </Layout>
     </Router>
-  );
-}
-
-function HomePage() {
-  return (
-    <>
-      <Hero />
-      <TestimonialsSection />
-      <CTASection />
-      <FAQSection />
-      <Footer />
-    </>
   );
 }
 

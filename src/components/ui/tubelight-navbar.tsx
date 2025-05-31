@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ThemeToggleButton } from "./theme-toggle-button"
+import { Link, useLocation } from "react-router-dom"
 
 interface NavItem {
   name: string
@@ -18,8 +19,28 @@ interface NavBarProps {
 }
 
 export function NavBar({ items, className }: NavBarProps) {
-  const [activeTab, setActiveTab] = useState(items[0].name)
-  const [, setIsMobile] = useState(false)
+  const location = useLocation()
+  const [activeTab, setActiveTab] = useState("")
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Set active tab based on current location
+  useEffect(() => {
+    // Default to first item if on homepage
+    if (location.pathname === "/") {
+      setActiveTab(items[0].name)
+    } else {
+      // Find the matching route
+      const matchingItem = items.find(item => 
+        location.pathname.startsWith(item.url) && item.url !== "/"
+      )
+      if (matchingItem) {
+        setActiveTab(matchingItem.name)
+      } else {
+        // Default to home if no match
+        setActiveTab(items[0].name)
+      }
+    }
+  }, [location.pathname, items])
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,13 +65,10 @@ export function NavBar({ items, className }: NavBarProps) {
           const isActive = activeTab === item.name
 
           return (
-            <a
+            <Link
               key={item.name}
-              href={item.url}
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab(item.name);
-              }}
+              to={item.url}
+              onClick={() => setActiveTab(item.name)}
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
                 "text-foreground/80 hover:text-primary",
@@ -79,7 +97,7 @@ export function NavBar({ items, className }: NavBarProps) {
                   </div>
                 </motion.div>
               )}
-            </a>
+            </Link>
           )
         })}
         <div className="px-2">
