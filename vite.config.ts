@@ -13,6 +13,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
+      // Ensure all imports of 'three' resolve to the same instance
+      "three": resolve(__dirname, "./node_modules/three"), 
     },
   },
+  assetsInclude: ['**/*.glb', '**/*.glsl'], // Tell Vite to treat .glb and .glsl as assets
 })

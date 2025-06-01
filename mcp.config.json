@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "github.com/hyperbrowserai/mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "hyperbrowser-mcp", "hb_9159974c10e7d3854ec184526284"]
+    }
+  }
+}

@@ -1,0 +1,19 @@
+/* Make canvas within the component container take full size */
+div[data-brain-animation-container="true"] { /* We'll add this data attribute to the container in Brain.tsx */
+  width: 100%;
+  height: 100%;
+  position: relative; /* Ensure it's a positioning context if needed */
+}
+
+div[data-brain-animation-container="true"] > canvas {
+  display: block; /* Ensure canvas is block to take up space */
+  width: 100% !important;  /* Force width */
+  height: 100% !important; /* Force height */
+  opacity: 0;
+  outline: none;
+  transition: 1s opacity;
+}
+
+html.model-loaded div[data-brain-animation-container="true"] > canvas {
+  opacity: 1;
+}
