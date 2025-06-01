@@ -5,9 +5,9 @@ import { NavBar } from "./tubelight-navbar";
 import { FeatureBentoGrid } from "./FeatureBentoGrid";
 
 const navItems = [
-  { name: 'Home', url: '#', icon: Home },
+  { name: 'Home', url: '/', icon: Home },
   { name: 'About', url: '#', icon: User },
-  { name: 'Features', url: '#', icon: Briefcase },
+  { name: 'Features', url: '/features', icon: Briefcase },
   { name: 'Decks', url: '#', icon: FileText }
 ];
 

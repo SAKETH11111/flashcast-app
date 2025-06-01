@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { useNavigate, useLocation } from "react-router-dom"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ThemeToggleButton } from "./theme-toggle-button"
@@ -18,7 +19,12 @@ interface NavBarProps {
 }
 
 export function NavBar({ items, className }: NavBarProps) {
-  const [activeTab, setActiveTab] = useState(items[0].name)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [activeTab, setActiveTab] = useState(() => {
+    const currentItem = items.find(item => item.url === location.pathname)
+    return currentItem ? currentItem.name : items[0].name
+  })
   const [, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -30,6 +36,13 @@ export function NavBar({ items, className }: NavBarProps) {
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  useEffect(() => {
+    const currentItem = items.find(item => item.url === location.pathname)
+    if (currentItem) {
+      setActiveTab(currentItem.name)
+    }
+  }, [location.pathname, items])
 
   return (
     <div
@@ -44,12 +57,11 @@ export function NavBar({ items, className }: NavBarProps) {
           const isActive = activeTab === item.name
 
           return (
-            <a
+            <button
               key={item.name}
-              href={item.url}
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 setActiveTab(item.name);
+                navigate(item.url);
               }}
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
@@ -79,7 +91,7 @@ export function NavBar({ items, className }: NavBarProps) {
                   </div>
                 </motion.div>
               )}
-            </a>
+            </button>
           )
         })}
         <div className="px-2">

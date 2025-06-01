@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import AnimatedText from './AnimatedText';
 import BrainModel from './BrainModel';
 import '@/components/vendor/threejs-brain-animation/styles.css';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { GridPatternBackground } from '@/components/ui/GridPatternBackground';
 import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
 
 const badgeData = [
-  { texts: ["Learn", "Recall", "Retain", "Master"], initialAngle: 0, orbitRadius: 180, speed: 0.03, color: "bg-pink-500" },
-  { texts: ["Visualize", "Engage", "Focus", "Discover"], initialAngle: Math.PI / 2, orbitRadius: 200, speed: -0.025, color: "bg-sky-500" },
-  { texts: ["Connect", "Explore", "Understand", "Grow"], initialAngle: Math.PI, orbitRadius: 190, speed: 0.02, color: "bg-yellow-500" },
-  { texts: ["Practice", "Review", "Succeed", "Achieve"], initialAngle: (3 * Math.PI) / 2, orbitRadius: 210, speed: -0.035, color: "bg-green-500" },
+  { texts: ["Learn", "Recall", "Retain", "Master"], initialAngle: 0, orbitRadius: 230, speed: 0.03, color: "bg-pink-500" },
+  { texts: ["Visualize", "Engage", "Focus", "Discover"], initialAngle: Math.PI / 2, orbitRadius: 260, speed: -0.025, color: "bg-sky-500" },
+  { texts: ["Connect", "Explore", "Understand", "Grow"], initialAngle: Math.PI, orbitRadius: 250, speed: 0.02, color: "bg-yellow-500" },
+  { texts: ["Practice", "Review", "Succeed", "Achieve"], initialAngle: (3 * Math.PI) / 2, orbitRadius: 270, speed: -0.035, color: "bg-green-500" },
 ];
 
 interface FeatureBadgeHTMLProps {
@@ -21,11 +22,11 @@ interface FeatureBadgeHTMLProps {
   orbitRadius: number;
   speed: number;
   color: string;
-  parentSize: { width: number; height: number };
+  brainOffset: { x: number; y: number };
 }
 
 const FeatureBadgeHTML: React.FC<FeatureBadgeHTMLProps> = 
-  ({ texts, initialAngle, orbitRadius, speed, color, parentSize }) => {
+  ({ texts, initialAngle, orbitRadius, speed, color, brainOffset }) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
   useEffect(() => {
@@ -39,18 +40,18 @@ const FeatureBadgeHTML: React.FC<FeatureBadgeHTMLProps> =
 
   const animateProps = {
     x: [
-      Math.cos(initialAngle) * orbitRadius,
-      Math.cos(initialAngle + Math.PI * 0.5) * orbitRadius * 0.9,
-      Math.cos(initialAngle + Math.PI) * orbitRadius * 0.8,
-      Math.cos(initialAngle + Math.PI * 1.5) * orbitRadius * 0.9,
-      Math.cos(initialAngle + Math.PI * 2) * orbitRadius,
+      Math.cos(initialAngle) * orbitRadius + brainOffset.x,
+      Math.cos(initialAngle + Math.PI * 0.5) * orbitRadius * 0.9 + brainOffset.x,
+      Math.cos(initialAngle + Math.PI) * orbitRadius * 0.8 + brainOffset.x,
+      Math.cos(initialAngle + Math.PI * 1.5) * orbitRadius * 0.9 + brainOffset.x,
+      Math.cos(initialAngle + Math.PI * 2) * orbitRadius + brainOffset.x,
     ],
     y: [
-      Math.sin(initialAngle) * orbitRadius * 0.7,
-      Math.sin(initialAngle + Math.PI * 0.5) * orbitRadius,
-      Math.sin(initialAngle + Math.PI) * orbitRadius * 0.7,
-      Math.sin(initialAngle + Math.PI * 1.5) * orbitRadius * 0.5,
-      Math.sin(initialAngle + Math.PI * 2) * orbitRadius * 0.7,
+      Math.sin(initialAngle) * orbitRadius * 0.7 + brainOffset.y,
+      Math.sin(initialAngle + Math.PI * 0.5) * orbitRadius + brainOffset.y,
+      Math.sin(initialAngle + Math.PI) * orbitRadius * 0.7 + brainOffset.y,
+      Math.sin(initialAngle + Math.PI * 1.5) * orbitRadius * 0.5 + brainOffset.y,
+      Math.sin(initialAngle + Math.PI * 2) * orbitRadius * 0.7 + brainOffset.y,
     ],
     scale: [0.8, 1.1, 1.2, 1.1, 0.8],
     opacity: [0.7, 1, 1, 1, 0.7],
@@ -65,7 +66,7 @@ const FeatureBadgeHTML: React.FC<FeatureBadgeHTMLProps> =
 
   return (
     <motion.div
-      className={`absolute p-2 px-3 text-xs font-semibold text-white rounded-md shadow-lg ${color} transform-gpu flex items-center justify-center min-w-[100px] h-[30px]`}
+      className={`absolute p-4 px-6 text-lg font-extrabold text-white rounded-xl shadow-2xl ${color} transform-gpu flex items-center justify-center min-w-[160px] h-[60px] border-2 border-white/30 backdrop-blur-sm`}
       style={{ x: 0, y: 0 }}
       animate={animateProps}
       transition={transitionProps}
@@ -73,11 +74,11 @@ const FeatureBadgeHTML: React.FC<FeatureBadgeHTMLProps> =
       <AnimatePresence mode="wait">
         <motion.span
           key={texts[currentTextIndex]}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
+          initial={{ opacity: 0, y: 8, scale: 0.8 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -8, scale: 0.8 }}
+          transition={{ duration: 0.6 }}
+          className="text-center whitespace-nowrap tracking-wide"
         >
           {texts[currentTextIndex]}
         </motion.span>
@@ -88,10 +89,38 @@ const FeatureBadgeHTML: React.FC<FeatureBadgeHTMLProps> =
 
 
 const HeroSection: React.FC = () => {
-  const brainContainerRef = React.useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = React.useState({width: 0, height: 0});
+  const brainContainerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState({width: 0, height: 0});
+  const [brainOffset, setBrainOffset] = useState({ x: 0, y: 0 });
 
-  React.useEffect(() => {
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    if (!brainContainerRef.current) return;
+    
+    const rect = brainContainerRef.current.getBoundingClientRect();
+    const containerWidth = brainContainerRef.current.clientWidth;
+    const containerHeight = brainContainerRef.current.clientHeight;
+    
+    if (containerWidth === 0 || containerHeight === 0) return;
+    
+    const x = ((e.clientX - rect.left) / containerWidth) * 2 - 1;
+    const y = -((e.clientY - rect.top) / containerHeight) * 2 + 1;
+    
+    const newBrainOffset = {
+      x: x * 0.2 * 100,
+      y: y * 0.2 * 100
+    };
+    
+    gsap.to(brainOffset, {
+      x: newBrainOffset.x,
+      y: newBrainOffset.y,
+      duration: 0.5,
+      onUpdate: () => {
+        setBrainOffset({ ...brainOffset });
+      }
+    });
+  }, [brainOffset]);
+
+  useEffect(() => {
     if (brainContainerRef.current) {
       setContainerSize({
         width: brainContainerRef.current.offsetWidth,
@@ -100,6 +129,12 @@ const HeroSection: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+    };
+  }, [onMouseMove]);
 
   return (
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-background">
@@ -132,7 +167,7 @@ const HeroSection: React.FC = () => {
             <FeatureBadgeHTML 
               key={index} 
               {...badge}
-              parentSize={containerSize}
+              brainOffset={brainOffset}
             />
           ))}
         </div>

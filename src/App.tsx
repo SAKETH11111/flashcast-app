@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import FeaturesPage from './pages/FeaturesPage'; // Added import
+import FeaturesPage from './pages/FeaturesPage';
 import { Hero } from './components/ui/animated-hero';
 import { Particles } from './components/ui/particles';
 import TestimonialsSection from './components/ui/testimonials-section';
@@ -25,7 +25,7 @@ function App() {
         <div className="relative z-10">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/features" element={<FeaturesPage />} /> {/* Added features route */}
+            <Route path="/features" element={<FeaturesPage />} />
           </Routes>
         </div>
         <ScrollToTopButton />

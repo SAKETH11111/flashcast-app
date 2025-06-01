@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 
 interface ScrollToTopButtonProps {
   className?: string;
-  showAfter?: number; // pixels to scroll before showing button
-  duration?: number; // scroll animation duration in ms
+  showAfter?: number;
+  duration?: number;
 }
 
 export default function ScrollToTopButton({ 
@@ -42,7 +42,6 @@ export default function ScrollToTopButton({
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      // Easing function for smooth animation
       const easeInOutCubic = (t: number): number => {
         return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
       };

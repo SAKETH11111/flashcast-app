@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Scene,
   WebGLRenderer,
@@ -29,19 +29,26 @@ const BrainAnimation: React.FC<BrainAnimationProps> = React.memo(({ ...props }) 
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
   const isInitializedRef = useRef(false);
-  const [sizeSt, setSizeSt] = useState({ width: 0, height: 0 }); // Renamed to avoid conflict with 'size' in loadingManager
+
 
   const threeRef = useRef({
     scene: null as Scene | null,
     camera: null as PerspectiveCamera | null,
     renderer: null as WebGLRenderer | null,
     raycaster: null as Raycaster | null,
-    brain: null as Mesh | null, // This will hold the loaded GLB mesh (used for raycasting)
-    instancedMesh: null as InstancedUniformsMesh<ShaderMaterial> | null, // This is the particle effect
+    brain: null as Mesh | null,
+    instancedMesh: null as InstancedUniformsMesh<ShaderMaterial> | null,
   });
 
   const colors = useMemo(
-    () => [new Color(0x963cbd), new Color(0xff6f61), new Color(0xc5299b), new Color(0xfeae51)],
+    () => [
+      new Color(0x4ade80),
+      new Color(0xfbbf24),
+      new Color(0x22c55e),
+      new Color(0xf59e0b),
+      new Color(0x16a34a),
+      new Color(0xeab308),
+    ],
     [],
   );
 
@@ -100,8 +107,7 @@ const BrainAnimation: React.FC<BrainAnimationProps> = React.memo(({ ...props }) 
 
     gltfLoader.load(brainModelAssetPath, (gltf) => {
       const brainMesh = gltf.scene.children[0] as Mesh;
-      threeRef.current.brain = brainMesh; // Store the loaded brain mesh (for raycasting)
-                                          // Do NOT add brainMesh to the scene if we only want particles
+      threeRef.current.brain = brainMesh;
 
       const geometry = new BoxGeometry(0.004, 0.004, 0.004, 1, 1, 1);
       const material = new ShaderMaterial({
@@ -124,7 +130,7 @@ const BrainAnimation: React.FC<BrainAnimationProps> = React.memo(({ ...props }) 
           brainMesh.geometry.attributes.position.count,
         );
         threeRef.current.instancedMesh = instancedMesh;
-        threeRef.current.scene!.add(instancedMesh); // Add the particle system
+        threeRef.current.scene!.add(instancedMesh);
 
         const dummy = new Object3D();
         const positions = brainMesh.geometry.attributes.position.array;
@@ -141,51 +147,42 @@ const BrainAnimation: React.FC<BrainAnimationProps> = React.memo(({ ...props }) 
     });
     
     checkMobile();
-    onResize(); // Call onResize to set initial camera aspect and renderer size correctly
+    onResize();
     addListeners();
     animate();
-  }, [onResize, checkMobile, colors]); // Added dependencies
+  }, [onResize, checkMobile, colors]);
 
   const animate = useCallback(() => {
     if (!isInitializedRef.current) return;
     animationFrameRef.current = requestAnimationFrame(animate);
     update();
-    renderThreeScene(); // Renamed to avoid conflict
-  }, [/* update, renderThreeScene could be added */]);
+    renderThreeScene();
+  }, []);
 
   const update = useCallback(() => {
     if (threeRef.current.camera) {
       threeRef.current.camera.lookAt(0, 0, 0);
       threeRef.current.camera.position.z = isMobileRef.current ? 2.3 : 1.2;
     }
-    // Update uniforms or other animations here if needed
     if (threeRef.current.instancedMesh) {
-        // Example: Animate uHover based on mouseRef or other logic
-        // This part was in onMousemove, but can be simplified or moved here for continuous animation
          const targetHover = hoverRef.current ? 1 : 0;
-         uniformsRef.current.uHover += (targetHover - uniformsRef.current.uHover) * 0.1; // Smooth transition
+         uniformsRef.current.uHover += (targetHover - uniformsRef.current.uHover) * 0.1;
 
         for (let i = 0; i < threeRef.current.instancedMesh.count; i++) {
             threeRef.current.instancedMesh.setUniformAt('uHover', i, uniformsRef.current.uHover);
-            threeRef.current.instancedMesh.setUniformAt('uPointer', i, pointRef.current); // Update pointer for interaction
+            threeRef.current.instancedMesh.setUniformAt('uPointer', i, pointRef.current);
         }
     }
 
-  }, [/* dependencies for update */]);
+  }, []);
 
-  const renderThreeScene = useCallback(() => { // Renamed
+  const renderThreeScene = useCallback(() => {
     if (threeRef.current.renderer && threeRef.current.scene && threeRef.current.camera) {
       threeRef.current.renderer.render(threeRef.current.scene, threeRef.current.camera);
     }
   }, []);
   
-  const animateHoverUniform = useCallback((value: number) => { // This function might be redundant if uHover is animated in update()
-    gsap.to(uniformsRef.current, {
-      uHover: value,
-      duration: 0.25,
-      // onUpdate handled in main update loop now
-    });
-  }, []);
+
 
   const onMousemove = useCallback((e: MouseEvent) => {
     if (!containerRef.current || !threeRef.current.camera || !threeRef.current.raycaster || !threeRef.current.brain) return;
@@ -201,17 +198,15 @@ const BrainAnimation: React.FC<BrainAnimationProps> = React.memo(({ ...props }) 
     gsap.to(threeRef.current.camera.position, { x: x * 0.2, y: -y * 0.2, duration: 0.5 });
 
     threeRef.current.raycaster.setFromCamera(mouseRef.current, threeRef.current.camera);
-    intersectsRef.current = threeRef.current.raycaster.intersectObject(threeRef.current.brain, true); // Raycast against the invisible brain model
+    intersectsRef.current = threeRef.current.raycaster.intersectObject(threeRef.current.brain, true);
 
     if (intersectsRef.current.length === 0) {
       if (hoverRef.current) {
         hoverRef.current = false;
-        // animateHoverUniform(0); // uHover is now animated in update loop
       }
     } else {
       if (!hoverRef.current) {
         hoverRef.current = true;
-        // animateHoverUniform(1); // uHover is now animated in update loop
       }
       gsap.to(pointRef.current, {
         x: intersectsRef.current[0]?.point.x || 0,
@@ -219,10 +214,9 @@ const BrainAnimation: React.FC<BrainAnimationProps> = React.memo(({ ...props }) 
         z: intersectsRef.current[0]?.point.z || 0,
         overwrite: true,
         duration: 0.3,
-        // onUpdate handled in main update loop
       });
     }
-  }, [/* animateHoverUniform removed if uHover is handled in update */]);
+  }, []);
 
   const addListeners = useCallback(() => {
     window.addEventListener('resize', onResize, { passive: true });
