@@ -23,7 +23,7 @@ const ImportExportCard = ({ className }: ImportExportCardProps) => {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDraggingOver(false);
-    alert("File drop simulated! Implement actual import logic.");
+    // TODO: Implement actual import logic
   };
 
   return (
@@ -74,7 +74,7 @@ const ImportExportCard = ({ className }: ImportExportCardProps) => {
           className="mt-2 text-xs bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-1 rounded"
           onClick={(e) => {
             e.stopPropagation();
-            alert("Export simulated! Implement actual export logic.");
+            // TODO: Implement actual export logic
           }}
         >
           <DownloadCloud className="inline-block w-3 h-3 mr-1" />

@@ -68,7 +68,9 @@ function Hero() {
               </p>
             </div>
             <div className="flex flex-row gap-3 relative z-50 mt-6">
-              <button className="button flashcast-btn" onClick={() => alert('Button clicked!')}>
+              <button className="button flashcast-btn" onClick={() => {
+                // TODO: Navigate to sign up or onboarding
+              }}>
                 Get Started <MoveRight className="inline-block w-4 h-4 ml-2" />
               </button>
             </div>
