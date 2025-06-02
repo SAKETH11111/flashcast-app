@@ -47,7 +47,7 @@ export function NavBar({ items, className }: NavBarProps) {
   return (
     <div
       className={cn(
-        "fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-6 pointer-events-none",
+        "fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-[60] mb-6 sm:pt-6 pointer-events-none",
         className,
       )}
     >
@@ -64,9 +64,9 @@ export function NavBar({ items, className }: NavBarProps) {
                 navigate(item.url);
               }}
               className={cn(
-                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
+                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors bg-transparent",
                 "text-foreground/80 hover:text-primary",
-                isActive && "bg-muted text-primary",
+                isActive && "text-primary",
               )}
             >
               <span className="hidden md:inline">{item.name}</span>
