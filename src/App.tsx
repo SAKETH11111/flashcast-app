@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FeaturesPage from './pages/FeaturesPage';
+import StudyPage from './pages/StudyPage'; // Import StudyPage
 import { Hero } from './components/ui/animated-hero';
 import { Particles } from './components/ui/particles';
 import TestimonialsSection from './components/ui/testimonials-section';
@@ -26,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/study/:deckId" element={<StudyPage />} /> {/* Add new route */}
           </Routes>
         </div>
         <ScrollToTopButton />
