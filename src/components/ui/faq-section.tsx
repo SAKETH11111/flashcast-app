@@ -68,17 +68,17 @@ const faqData: FaqItem[] = [
   },
   {
     question: "Is FlashCast free to use?",
-    answer: "FlashCast offers a generous free tier with up to 500 cards and basic features. Pro plans start at $9/month with unlimited cards, advanced AI features, team collaboration, and priority support. Students get 50% off all plans.",
+    answer: "Yes! FlashCast is currently completely free to use with all features available. We're in our early access phase and want to help as many students as possible improve their learning. Premium features and subscription plans may be introduced in the future, but for now, enjoy unlimited access to all our AI-powered study tools at no cost.",
     category: "pricing"
   },
   {
     question: "Can I cancel my subscription anytime?",
-    answer: "Yes, you can cancel your FlashCast subscription at any time with no questions asked. Your data remains accessible, and you can always reactivate your subscription later. We also offer a 30-day money-back guarantee.",
+    answer: "Since FlashCast is currently free to use, there are no subscriptions to cancel! You can simply stop using the app anytime without any commitments. Your study data will remain safe in your account, and you can return anytime. When we do introduce premium plans in the future, we'll ensure easy cancellation with full data retention.",
     category: "pricing"
   },
   {
     question: "Do you offer educational discounts?",
-    answer: "Yes! Students with valid .edu email addresses receive 50% off all Pro plans. We also offer institutional licenses for schools and universities with volume discounts. Contact our education team for custom pricing.",
+    answer: "Currently, FlashCast is completely free for everyone - students, teachers, and institutions alike! No need for educational discounts when there's no cost. We believe in making quality education tools accessible to all. When we introduce premium features in the future, we'll definitely consider special pricing for educational institutions and students.",
     category: "pricing"
   }
 ];

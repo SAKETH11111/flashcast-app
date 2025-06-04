@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FeaturesPage from './pages/FeaturesPage';
+import StudyPage from './pages/StudyPage';
 import { Hero } from './components/ui/animated-hero';
 import { Particles } from './components/ui/particles';
 import TestimonialsSection from './components/ui/testimonials-section';
@@ -8,6 +9,7 @@ import FAQSection from './components/ui/faq-section';
 import CTASection from './components/ui/cta-section';
 import { Footer } from './components/ui/footer-section';
 import ScrollToTopButton from './components/ui/scroll-to-top-button';
+import { SignInPage } from './components/ui/sign-in-flow-1';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/study/:deckId" element={<StudyPage />} />
+            <Route path="/signin" element={<SignInPage />} />
           </Routes>
         </div>
         <ScrollToTopButton />

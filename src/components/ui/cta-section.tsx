@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MoveRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import MagneticButton from './magnetic-button';
 import FloatingElements from './floating-elements';
 
 export default function CTASection() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -15,7 +17,7 @@ export default function CTASection() {
     
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    window.location.href = '/login';
+    navigate('/signin');
     
     setIsLoading(false);
   };

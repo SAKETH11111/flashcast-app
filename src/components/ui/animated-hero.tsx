@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, Home, User, Briefcase, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { NavBar } from "./tubelight-navbar";
 import { FeatureBentoGrid } from "./FeatureBentoGrid";
 
@@ -12,6 +13,7 @@ const navItems = [
 ];
 
 function Hero() {
+  const navigate = useNavigate();
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
     () => ["interactive", "browser-based", "voice-controlled", "smart", "efficient"],
@@ -69,9 +71,9 @@ function Hero() {
             </div>
             <div className="flex flex-row gap-3 relative z-50 mt-6">
               <button className="button flashcast-btn" onClick={() => {
-                // TODO: Navigate to sign up or onboarding
+                navigate('/signin');
               }}>
-                Get Started <MoveRight className="inline-block w-4 h-4 ml-2" />
+                Try Demo <MoveRight className="inline-block w-4 h-4 ml-2" />
               </button>
             </div>
           </div>
