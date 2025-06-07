@@ -22,7 +22,7 @@ const Flashcard: React.FC<FlashcardProps> = ({
   onNext,
   onPrevious,
 }) => {
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 100;
     
     if (info.offset.x > threshold) {
