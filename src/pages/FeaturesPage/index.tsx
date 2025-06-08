@@ -27,9 +27,7 @@ const FeaturesPage: React.FC = () => {
       <div className="container mx-auto px-4 py-12 md:py-20 flex justify-center">
         <MagneticButton
           className="button"
-          onClick={() => {
-            // Handle navigation to sign up or onboarding
-          }}
+          onClick={() => {}}
         >
           Get Started with FlashCast
         </MagneticButton>

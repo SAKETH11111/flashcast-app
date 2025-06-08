@@ -8,13 +8,11 @@ varying vec3 vColor;
 
 #define PI 3.14159265359
 
-// Inlined rotate function from modules/rotate.glsl
 mat2 rotate(float angle) {
   float s = sin(angle);
   float c = cos(angle);
   return mat2(c, -s, s, c);
 }
-// Removed: #pragma glslify: rotate = require(./modules/rotate.glsl)
 
 void main() {
   // First, calculate `mvPosition` to get the distance between the instance and the

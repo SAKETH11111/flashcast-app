@@ -3,10 +3,11 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin, type TokenResponse } from '@react-oauth/google';
 import { cn } from "@/lib/utils";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { NavBar } from "./tubelight-navbar";
-import { Home, User, Briefcase, FileText, ArrowRight } from "lucide-react";
+import { Home, User, Briefcase, FileText } from "lucide-react";
 
 import * as THREE from "three";
 
@@ -56,10 +57,9 @@ export const CanvasRevealEffect = ({
   showGradient?: boolean;
   reverse?: boolean;
 }) => {
-  // Use CSS to determine if we're in dark mode, default to yellow for dark mode
   const defaultColors = [
-    [255, 255, 0], // Yellow for dark mode (default)
-    [0, 255, 0]    // Green for light mode  
+    [255, 255, 0],
+    [0, 255, 0]
   ];
   
   return (
@@ -96,7 +96,7 @@ interface DotMatrixProps {
 }
 
 const DotMatrix: React.FC<DotMatrixProps> = ({
-  colors = [[255, 255, 0], [0, 255, 0]], // Default to yellow and green
+  colors = [[255, 255, 0], [0, 255, 0]],
   opacities = [0.04, 0.04, 0.04, 0.04, 0.04, 0.08, 0.08, 0.08, 0.08, 0.14],
   totalSize = 20,
   dotSize = 2,
@@ -354,19 +354,11 @@ const Shader: React.FC<ShaderProps> = ({ source, uniforms }) => {
 
 export const SignInPage = ({ className }: SignInPageProps) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
   const [step, setStep] = useState<"email" | "code" | "success">("email");
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const codeInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [initialCanvasVisible, setInitialCanvasVisible] = useState(true);
   const [reverseCanvasVisible, setReverseCanvasVisible] = useState(false);
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setStep("code");
-    }
-  };
 
   useEffect(() => {
     if (step === "code") {
@@ -416,6 +408,20 @@ export const SignInPage = ({ className }: SignInPageProps) => {
     setInitialCanvasVisible(true);
   };
 
+  const handleGoogleLoginSuccess = (tokenResponse: Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>) => {
+    console.log("Google Login Success. Access Token:", tokenResponse.access_token);
+    setStep("success");
+  };
+
+  const handleGoogleLoginError = () => {
+    console.error("Google Login Failed");
+  };
+
+  const login = useGoogleLogin({
+    onSuccess: handleGoogleLoginSuccess,
+    onError: handleGoogleLoginError,
+  });
+
   return (
     <div className={cn("flex w-[100%] flex-col min-h-screen bg-black dark:bg-black relative", className)}>
       <div className="absolute inset-0 z-0">
@@ -425,8 +431,8 @@ export const SignInPage = ({ className }: SignInPageProps) => {
               animationSpeed={3}
               containerClassName="bg-black"
               colors={[
-                [255, 255, 0], // Yellow for dark mode (default since bg is black)
-                [255, 255, 0], // Keep yellow consistent
+                [255, 255, 0],
+                [255, 255, 0],
               ]}
               dotSize={6}
               reverse={false}
@@ -440,8 +446,8 @@ export const SignInPage = ({ className }: SignInPageProps) => {
               animationSpeed={4}
               containerClassName="bg-black"
               colors={[
-                [255, 255, 0], // Yellow for dark mode (default since bg is black)
-                [255, 255, 0], // Keep yellow consistent
+                [255, 255, 0],
+                [255, 255, 0],
               ]}
               dotSize={6}
               reverse={true}
@@ -475,35 +481,20 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     </div>
                     
                     <div className="space-y-4">
-                      <button className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-green-400/20 dark:hover:bg-yellow-400/20 text-white border border-white/10 hover:border-green-400/30 dark:hover:border-yellow-400/30 rounded-full py-3 px-4 transition-all duration-300 group">
-                        <span className="text-lg group-hover:text-green-400 dark:group-hover:text-yellow-400 transition-colors">G</span>
+                      <button
+                        onClick={() => login()}
+                        className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-green-400/20 dark:hover:bg-yellow-400/20 text-white border border-white/10 hover:border-green-400/30 dark:hover:border-yellow-400/30 rounded-full py-3 px-4 transition-all duration-300 group"
+                      >
+                        <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+                          <g fill="none" fillRule="evenodd">
+                            <path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4818h4.8436c-.2086 1.125-.844 2.0782-1.7777 2.7273v2.259h2.9087c1.7018-1.5668 2.6836-3.874 2.6836-6.6273z" fill="#4285F4"/>
+                            <path d="M9 18c2.43 0 4.4673-.8054 5.9564-2.1818l-2.9087-2.259c-.8055.5436-1.8364.8618-3.0477.8618-2.344 0-4.3282-1.5805-5.0359-3.7005H.957v2.3318C2.4382 16.1454 5.4264 18 9 18z" fill="#34A853"/>
+                            <path d="M3.9641 10.71c-.18-.5437-.2827-1.1169-.2827-1.71s.1023-1.1663.2823-1.71V4.9582H.9568C.3477 6.1732 0 7.5477 0 9s.3477 2.8268.9572 4.0418L3.964 10.71z" fill="#FBBC05"/>
+                            <path d="M9 3.4773c1.3236 0 2.5182.4527 3.4405 1.3464l2.5813-2.5814C13.4636.8236 11.4259 0 9 0 5.4264 0 2.4382 1.8545.9568 4.9582L3.964 7.29C4.6718 5.1627 6.656 3.4773 9 3.4773z" fill="#EA4335"/>
+                          </g>
+                        </svg>
                         <span className="group-hover:text-green-400 dark:group-hover:text-yellow-400 transition-colors">Sign in with Google</span>
                       </button>
-                      
-                      <div className="flex items-center gap-4">
-                        <div className="h-px bg-white/10 flex-1" />
-                        <span className="text-white/40 text-sm">or</span>
-                        <div className="h-px bg-white/10 flex-1" />
-                      </div>
-                      
-                      <form onSubmit={handleEmailSubmit}>
-                        <div className="relative">
-                          <input 
-                            type="email" 
-                            placeholder="info@gmail.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full backdrop-blur-[1px] bg-white/5 text-white border-1 border-white/10 rounded-full py-3 px-4 pr-12 focus:outline-none focus:border focus:border-white/30 placeholder-white/40"
-                            required
-                          />
-                          <button
-                            type="submit"
-                            className="absolute right-1.5 top-1.5 text-black w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-gray-200 transition-colors z-10 shadow-lg"
-                          >
-                            <ArrowRight className="w-4 h-4" color="currentColor" />
-                          </button>
-                        </div>
-                      </form>
                     </div>
                     
                     <p className="text-xs text-white/40 pt-10">
@@ -601,35 +592,22 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, ease: "easeOut", delay: 0.3 }}
-                    className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">You're in!</h1>
-                      <p className="text-[1.25rem] text-white/50 font-light">Welcome to Flashcast</p>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">Success!</h1>
+                      <p className="text-[1.8rem] text-white/70 font-light">You're all set.</p>
                     </div>
-                    
-                    <motion.div 
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.5, delay: 0.5 }}
-                      className="py-10"
-                    >
-                      <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-white to-white/70 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-black" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    </motion.div>
-                    
-                    <motion.button 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 1 }}
-                      className="w-full rounded-full bg-white text-black font-medium py-3 hover:bg-white/90 transition-colors"
-                      onClick={() => navigate('/')}
-                    >
-                      Continue to Dashboard
-                    </motion.button>
+                    <div className="mt-8">
+                      <motion.button 
+                        onClick={() => navigate('/')}
+                        className="rounded-full bg-white text-black font-medium px-8 py-3 hover:bg-white/90 transition-colors"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        Go to Dashboard
+                      </motion.button>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

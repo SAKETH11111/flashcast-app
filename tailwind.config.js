@@ -106,6 +106,7 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")], // Removed addVariablesForColors plugin
+-------
+  plugins: [require("tailwindcss-animate")],
 }
 

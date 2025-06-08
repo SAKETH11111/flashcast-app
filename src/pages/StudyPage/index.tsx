@@ -11,10 +11,8 @@ import { ProgressBar } from "./components/ProgressBar";
 import { VoiceButton } from "./components/VoiceButton";
 import type { FlashcardData, StudySession } from "./types";
 
-// Re-export types for external use
 export type { FlashcardData, StudySession } from "./types";
 
-// Mock data for testing
 const mockCards: FlashcardData[] = [
   {
     id: "1",
@@ -146,13 +144,11 @@ const StudyPage: React.FC = () => {
       incorrectCount: !known ? prev.incorrectCount + 1 : prev.incorrectCount
     }));
     
-    // Auto-advance to next card
     setTimeout(() => {
       handleNext();
     }, 500);
   }, [handleNext]);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       switch (event.code) {
@@ -210,7 +206,6 @@ const StudyPage: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-background relative overflow-hidden">
-      {/* Background particles */}
       <Particles
         className="absolute inset-0 z-0"
         quantity={200}
@@ -221,9 +216,7 @@ const StudyPage: React.FC = () => {
         staticity={40}
       />
 
-      {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-4 md:p-6">
           <Button
             variant="ghost"
@@ -241,10 +234,9 @@ const StudyPage: React.FC = () => {
             incorrectCount={session.incorrectCount}
           />
           
-          <div className="w-10 h-10" /> {/* Spacer for alignment */}
+          <div className="w-10 h-10" />
         </div>
 
-        {/* Flashcard area */}
         <div className="flex-1 flex items-center justify-center p-4 md:p-8">
           <div className="relative">
             <Flashcard
@@ -257,7 +249,6 @@ const StudyPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Controls */}
         <div className="pb-4 md:pb-8">
           <div className="flex justify-center mb-4">
             <VoiceButton />

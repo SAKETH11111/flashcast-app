@@ -73,14 +73,14 @@ function Hero() {
               <button className="button flashcast-btn" onClick={() => {
                 navigate('/signin');
               }}>
-                Try Demo <MoveRight className="inline-block w-4 h-4 ml-2" />
+                Get Started <MoveRight className="inline-block w-4 h-4 ml-2" />
               </button>
             </div>
           </div>
 
           <div className="py-12 md:py-16 lg:py-20 text-center">
             <div className="bg-muted/50 dark:bg-muted/20 w-full max-w-4xl mx-auto h-64 md:h-80 lg:h-96 rounded-lg flex items-center justify-center border border-border">
-              <p className="text-muted-foreground">App Image Placeholder</p>
+              <div className="text-muted-foreground text-6xl">📱</div>
             </div>
           </div>
 
