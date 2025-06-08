@@ -1,14 +1,15 @@
 import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
-import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react-swc"
+import svgr from "vite-plugin-svgr"
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), svgr()],
   base: "/flashcast-app/",
   resolve: {
     alias: {
@@ -17,4 +18,7 @@ export default defineConfig({
     },
   },
   assetsInclude: ['**/*.glb', '**/*.glsl'],
+  css: {
+    postcss: './postcss.config.js'
+  }
 })

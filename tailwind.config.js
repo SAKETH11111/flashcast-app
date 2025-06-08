@@ -54,6 +54,11 @@ export default {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
+      borderColor: theme => ({
+        ...theme('colors'),
+        DEFAULT: 'hsl(var(--border))',
+        'border': 'hsl(var(--border))'
+      }),
   		animation: {
   			'spin-slow': 'spin 3s linear infinite',
   			'gradient-x': 'gradient-x 3s ease infinite',
@@ -106,7 +111,6 @@ export default {
   		}
   	}
   },
--------
   plugins: [require("tailwindcss-animate")],
 }
 
