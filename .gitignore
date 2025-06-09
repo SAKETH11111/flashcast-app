@@ -27,5 +27,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Project specific
 memory-bank/
+.opencode/
+OpenCode.md
