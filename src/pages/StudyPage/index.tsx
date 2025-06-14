@@ -105,11 +105,13 @@ const StudyPage: React.FC = () => {
   });
 
   const [isFlipped, setIsFlipped] = useState(false);
+  const [direction, setDirection] = useState(0);
 
   const currentCard = session.cards[session.currentIndex];
 
   const handleNext = useCallback(() => {
     if (session.currentIndex < session.cards.length - 1) {
+      setDirection(1);
       setSession(prev => ({
         ...prev,
         currentIndex: prev.currentIndex + 1
@@ -120,6 +122,7 @@ const StudyPage: React.FC = () => {
 
   const handlePrevious = useCallback(() => {
     if (session.currentIndex > 0) {
+      setDirection(-1);
       setSession(prev => ({
         ...prev,
         currentIndex: prev.currentIndex - 1
@@ -237,32 +240,32 @@ const StudyPage: React.FC = () => {
           <div className="w-10 h-10" />
         </div>
 
-        <div className="flex-1 flex items-center justify-center p-4 md:p-8">
-          <div className="relative">
+        <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
+          <div className="flex flex-col items-center space-y-8">
             <Flashcard
               card={currentCard}
               isFlipped={isFlipped}
+              direction={direction}
               onFlip={handleFlip}
               onNext={handleNext}
               onPrevious={handlePrevious}
+              isPrevAvailable={session.currentIndex > 0}
+              isNextAvailable={session.currentIndex < session.cards.length - 1}
             />
+            
+            <div className="flex flex-col items-center space-y-6">
+              <VoiceButton />
+              <StudyControls
+                isFlipped={isFlipped}
+                onFlip={handleFlip}
+                onNext={handleNext}
+                onPrevious={handlePrevious}
+                canGoBack={session.currentIndex > 0}
+                canGoForward={session.currentIndex < session.cards.length - 1}
+                onMarkKnown={handleMarkKnown}
+              />
+            </div>
           </div>
-        </div>
-
-        <div className="pb-4 md:pb-8">
-          <div className="flex justify-center mb-4">
-            <VoiceButton />
-          </div>
-          
-          <StudyControls
-            canGoBack={session.currentIndex > 0}
-            canGoForward={session.currentIndex < session.cards.length - 1}
-            isFlipped={isFlipped}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            onFlip={handleFlip}
-            onMarkKnown={handleMarkKnown}
-          />
         </div>
       </div>
     </div>

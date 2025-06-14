@@ -26,40 +26,42 @@ const VoiceButton: React.FC<VoiceButtonProps> = ({ onVoiceToggle }) => {
       animate={{ scale: 1, opacity: 1 }}
       transition={{ 
         type: "spring", 
-        stiffness: 300, 
-        damping: 20,
-        delay: 0.3 
+        stiffness: 400, 
+        damping: 25,
+        delay: 0.2 
       }}
     >
-      {/* Pulse animation ring when listening */}
+      {/* Subtle pulse ring when listening */}
       {isListening && (
         <motion.div
-          className="absolute inset-0 rounded-full border-2 border-primary"
+          className="absolute inset-0 rounded-full border border-primary/30"
+          initial={{ scale: 1, opacity: 0.6 }}
           animate={{
-            scale: [1, 1.5, 1],
-            opacity: [0.7, 0, 0.7],
+            scale: [1, 1.3, 1],
+            opacity: [0.6, 0.2, 0.6],
           }}
           transition={{
-            duration: 1.5,
+            duration: 2,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
       )}
 
-      {/* Secondary pulse ring */}
+      {/* Secondary subtle ring */}
       {isListening && (
         <motion.div
-          className="absolute inset-0 rounded-full border-2 border-primary"
+          className="absolute inset-0 rounded-full border border-primary/20"
+          initial={{ scale: 1, opacity: 0.4 }}
           animate={{
-            scale: [1, 2, 1],
-            opacity: [0.5, 0, 0.5],
+            scale: [1, 1.5, 1],
+            opacity: [0.4, 0.1, 0.4],
           }}
           transition={{
-            duration: 1.5,
+            duration: 2,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: 0.3,
+            delay: 0.5,
           }}
         />
       )}
@@ -70,15 +72,22 @@ const VoiceButton: React.FC<VoiceButtonProps> = ({ onVoiceToggle }) => {
         onClick={handleToggle}
         className={cn(
           "relative w-16 h-16 rounded-full",
-          "transition-all duration-300",
+          "transition-all duration-300 ease-out",
+          "hover:shadow-lg active:scale-95",
           isListening
-            ? "bg-primary text-primary-foreground shadow-lg scale-110"
-            : "hover:bg-primary/10 hover:border-primary",
+            ? "bg-primary text-primary-foreground shadow-md"
+            : "hover:bg-primary/5 hover:border-primary/50",
         )}
       >
         <motion.div
-          animate={{ rotate: isListening ? 360 : 0 }}
-          transition={{ duration: 0.3 }}
+          animate={{ 
+            scale: isListening ? 1.1 : 1,
+            rotate: isListening ? [0, 5, -5, 0] : 0
+          }}
+          transition={{ 
+            scale: { duration: 0.2, ease: "easeOut" },
+            rotate: { duration: 0.4, ease: "easeInOut" }
+          }}
         >
           {isListening ? (
             <Mic className="w-6 h-6" />
@@ -88,39 +97,23 @@ const VoiceButton: React.FC<VoiceButtonProps> = ({ onVoiceToggle }) => {
         </motion.div>
       </Button>
 
-      {/* Status text */}
+      {/* Professional tooltip on hover */}
       <motion.div
-        className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 whitespace-nowrap"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        className={cn(
+          "absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2",
+          "bg-black/80 text-white text-xs px-3 py-2 rounded-lg",
+          "backdrop-blur-sm border border-white/10",
+          "opacity-0 pointer-events-none",
+          "transition-opacity duration-200",
+          "whitespace-nowrap"
+        )}
+        whileHover={{ opacity: 1 }}
       >
-        <span className="text-xs text-muted-foreground">
-          {isListening ? "Listening..." : "Voice Commands"}
-        </span>
+        {isListening ? "Click to stop listening" : "Click to start voice commands"}
+        
+        {/* Tooltip arrow */}
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black/80" />
       </motion.div>
-
-      {/* Voice command hints tooltip (shown when not listening) */}
-      {!isListening && (
-        <motion.div
-          className={cn(
-            "absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2",
-            "bg-popover text-popover-foreground text-xs p-2 rounded-lg",
-            "border shadow-lg max-w-xs text-center",
-            "opacity-0 pointer-events-none group-hover:opacity-100",
-            "transition-opacity duration-200"
-          )}
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileHover={{ opacity: 1, scale: 1 }}
-        >
-          <p className="mb-1 font-medium">Voice Commands:</p>
-          <p>"Flip card" • "Next" • "Previous"</p>
-          <p>"I know this" • "I don't know"</p>
-          
-          {/* Tooltip arrow */}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-popover" />
-        </motion.div>
-      )}
     </motion.div>
   );
 };
