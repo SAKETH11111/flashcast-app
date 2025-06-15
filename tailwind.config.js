@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        saira: ['Saira', 'sans-serif'],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -55,6 +58,7 @@ export default {
         }
       },
       animation: {
+        "meteor-effect": "meteor 5s linear infinite",
         'spin-slow': 'spin 3s linear infinite',
         'gradient-x': 'gradient-x 3s ease infinite',
         'draw-border': 'draw-border 1s ease-in-out forwards',
@@ -62,6 +66,14 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out'
       },
       keyframes: {
+        meteor: {
+          "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform: "rotate(215deg) translateX(-500px)",
+            opacity: "0",
+          },
+        },
         'gradient-x': {
           '0%, 100%': {
             'background-position': '0% 50%'

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -27,9 +29,9 @@
   }
 
   .dark {
-    --background: 0 0% 10%;
+    --background: 210 3% 12%; /* rgb(29, 30, 30) converted to HSL */
     --foreground: 0 0% 98%;
-    --card: 0 0% 10%;
+    --card: 210 3% 16%; /* rgb(40, 41, 41) converted to HSL */
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 10%;
     --popover-foreground: 0 0% 98%;

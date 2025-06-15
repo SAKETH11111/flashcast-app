@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FeaturesPage from './pages/FeaturesPage';
 import StudyPage from './pages/StudyPage';
+import DashboardPage from './pages/DashboardPage';
 import { Hero } from './components/ui/animated-hero';
 import { Particles } from './components/ui/particles';
 import TestimonialsSection from './components/ui/testimonials-section';
@@ -30,6 +31,7 @@ function App() {
             <Route path="/features" element={<FeaturesPage />} />
             <Route path="/study/:deckId" element={<StudyPage />} />
             <Route path="/signin" element={<SignInPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
           </Routes>
         </div>
         <ScrollToTopButton />
