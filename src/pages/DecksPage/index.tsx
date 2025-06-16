@@ -1,5 +1,5 @@
-import { FilesPage as FilesPageComponent } from '../DashboardPage/components/FilesPage';
+import { DecksPage as DecksPageComponent } from '../DashboardPage/components/DecksPage';
 
-export default function FilesPage() {
-  return <FilesPageComponent />;
+export default function DecksPage() {
+  return <DecksPageComponent />;
 }

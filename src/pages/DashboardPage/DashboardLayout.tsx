@@ -32,7 +32,7 @@ const initialDecks = [
   { title: "Biology Midterm Review", updated: "2h ago", type: "Notes" as const, termCount: 42, lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000), tags: ["Midterm", "Biology"], pinned: true, status: 'active' as const },
   { title: "History Final Exam", updated: "1d ago", type: "Exam" as const, termCount: 120, lastUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000), tags: ["Final", "History"], pinned: false, status: 'active' as const },
   { title: "Organic Chemistry Deck", updated: "3d ago", type: "Flashcards" as const, termCount: 88, lastUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), tags: ["Chemistry", "Hard"], pinned: false, status: 'active' as const },
-  { title: "Deleted Deck 1", updated: "1h ago", type: "Flashcards", termCount: 10, lastUpdated: new Date(Date.now() - 1 * 60 * 60 * 1000), tags: ["Deleted"], pinned: false, status: 'trashed' as const },
+  { title: "Deleted Deck 1", updated: "1h ago", type: "Flashcards" as const, termCount: 10, lastUpdated: new Date(Date.now() - 1 * 60 * 60 * 1000), tags: ["Deleted"], pinned: false, status: 'trashed' as const },
 ];
 
 export type Deck = (typeof initialDecks)[number];
@@ -60,8 +60,8 @@ export default function DashboardLayout() {
   const handleTrash = (titles: DeckTitle[]) => {
     setDecks(prevDecks =>
       prevDecks.map(deck =>
-        titles.includes(deck.title) ? { ...deck, status: 'trashed' } : deck
-      )
+        titles.includes(deck.title) ? { ...deck, status: 'trashed' as const } : deck
+      ) as Deck[]
     );
     toast.error(`${titles.length} deck${titles.length > 1 ? 's' : ''} moved to trash`);
   };
@@ -69,8 +69,8 @@ export default function DashboardLayout() {
   const handleRestore = (titles: DeckTitle[]) => {
     setDecks(prevDecks =>
       prevDecks.map(deck =>
-        titles.includes(deck.title) ? { ...deck, status: 'active' } : deck
-      )
+        titles.includes(deck.title) ? { ...deck, status: 'active' as const } : deck
+      ) as Deck[]
     );
     toast.success(`${titles.length} deck${titles.length > 1 ? 's' : ''} restored`);
   };
@@ -78,7 +78,16 @@ export default function DashboardLayout() {
   return (
     <div className="flex bg-background h-screen font-saira">
       <Sidebar isPinned={isSidebarPinned} onPinChange={setIsSidebarPinned} />
-      <Toaster theme="dark" position="top-center" richColors />
+      <Toaster
+        theme="dark"
+        position="top-center"
+        richColors
+        toastOptions={{
+          classNames: {
+            error: 'bg-red-500 text-white',
+          },
+        }}
+      />
       <div className={cn(
         "flex-1 flex flex-col overflow-auto bg-muted/30 transition-all duration-300 ease-in-out",
         isSidebarPinned ? "pl-20" : "pl-20"

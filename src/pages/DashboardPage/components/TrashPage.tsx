@@ -76,8 +76,8 @@ export function TrashPage() {
     setIsSelectMode(false);
   }
 
-  const ActionButton = ({ icon, text, count }: { icon: React.ReactNode, text: string, count: number }) => (
-    <Button variant="ghost" className="text-muted-foreground hover:text-foreground gap-2 px-3">
+  const ActionButton = ({ icon, text, count, onClick, disabled }: { icon: React.ReactNode, text: string, count: number, onClick?: () => void, disabled?: boolean }) => (
+    <Button variant="ghost" className="text-muted-foreground hover:text-foreground gap-2 px-3" onClick={onClick} disabled={disabled}>
         {count > 0 && <div className="w-5 h-5 bg-foreground text-background text-xs font-bold rounded-full flex items-center justify-center">{count}</div>}
         {icon}
         {text}
@@ -86,7 +86,7 @@ export function TrashPage() {
 
   return (
     <div className="flex-1 px-8 py-10 text-white">
-      <div className="max-w-7xl mx-auto">
+      <div>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">Trash</h1>
@@ -164,6 +164,7 @@ export function TrashPage() {
                 <DeckCard
                     key={item.title}
                     {...item}
+                    type={item.type as "Flashcards" | "Notes" | "Exam"}
                     onTrash={() => {}}
                     onRestore={() => handleRestore([item.title])}
                     onPinToggle={() => {}}
@@ -196,6 +197,7 @@ export function TrashPage() {
                             <DeckListItem
                                 key={item.title}
                                 {...item}
+                                type={item.type as "Flashcards" | "Notes" | "Exam"}
                                 onTrash={() => {}}
                                 onRestore={() => handleRestore([item.title])}
                                 onPinToggle={() => {}}

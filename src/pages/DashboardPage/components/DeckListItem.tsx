@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Pin, BookOpen, FileText, TestTube2, Check, PinOff, Copy, Pen, Printer, Globe, FolderInput, ExternalLink, Tag, Merge, Download, Trash2, Undo } from "lucide-react";
+import { MoreVertical, Pin, BookOpen, FileText, TestTube2, Check, Copy, Pen, Printer, Globe, FolderInput, ExternalLink, Tag, Merge, Download, Trash2, Undo } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -19,7 +19,7 @@ interface DeckListItemProps {
   onSelect?: () => void;
   onPinToggle: () => void;
   onTrash: () => void;
-  onRestore: () => void;
+  onRestore?: () => void;
   isTrash?: boolean;
 }
 

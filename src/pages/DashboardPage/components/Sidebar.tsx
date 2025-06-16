@@ -3,12 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
   Library,
-  Bookmark,
   Trash2,
-  Presentation,
-  Telescope,
-  BookCheck,
-  ShoppingBag,
   ChevronRight,
   ChevronLeft,
   Camera,

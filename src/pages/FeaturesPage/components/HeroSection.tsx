@@ -60,7 +60,7 @@ const FeatureBadgeHTML: React.FC<FeatureBadgeHTMLProps> =
   const transitionProps = {
     duration: (1 / Math.abs(speed)) * 60,
     repeat: Infinity,
-    ease: "linear",
+    ease: "linear" as const,
     delay: initialAngle * 2,
   };
 

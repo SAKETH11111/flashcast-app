@@ -91,7 +91,7 @@ export function DecksPage() {
 
   return (
     <div className="flex-1 px-8 py-10 text-white">
-      <div className="max-w-7xl mx-auto">
+      <div>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">Decks</h1>
