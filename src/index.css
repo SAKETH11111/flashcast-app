@@ -5,6 +5,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply text-[14px];
+  }
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;

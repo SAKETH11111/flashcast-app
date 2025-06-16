@@ -603,17 +603,19 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                 ) : (
                   <motion.div 
                     key="success-step"
-                    initial={{ opacity: 0, y: 50 }}
+                    initial={{ opacity: 0, y: 100 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, ease: "easeOut", delay: 0.3 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="space-y-6 text-center"
                   >
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">Success!</h1>
-                      <p className="text-[1.8rem] text-white/70 font-light">You're all set.</p>
+                      <p className="text-[1.25rem] text-white/50 font-light">You're all set.</p>
                     </div>
+                    
                     <div className="mt-8">
                       <motion.button 
-                        onClick={() => navigate('/study/default')}
+                        onClick={() => navigate('/dashboard')}
                         className="rounded-full bg-white text-black font-medium px-8 py-3 hover:bg-white/90 transition-colors"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}

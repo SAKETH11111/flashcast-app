@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
   Library,
@@ -17,9 +18,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const NavLink = ({ href, icon, text, active = false, isExpanded, tag }: { href: string; icon: React.ReactNode; text: string; active?: boolean; isExpanded: boolean; tag?: string }) => (
-  <a
-    href={href}
+const NavLink = ({ href, icon, text, active = false, isExpanded, tag }: { href: string; icon: React.ReactNode; text: string; active?: boolean; isExpanded: boolean; tag?: string; }) => (
+  <Link
+    to={href}
     className={cn(
       "flex items-center h-10 w-full rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-accent",
       active && "text-primary bg-primary/10",
@@ -36,7 +37,7 @@ const NavLink = ({ href, icon, text, active = false, isExpanded, tag }: { href: 
         {tag}
       </span>
     )}
-  </a>
+  </Link>
 );
 
 const SectionTitle = ({ text, isExpanded }: { text:string; isExpanded: boolean }) => (
@@ -55,6 +56,7 @@ interface SidebarProps {
 
 export function Sidebar({ isPinned, onPinChange }: SidebarProps) {
     const [isHovered, setIsHovered] = useState(false);
+    const location = useLocation();
 
     const isExpanded = isHovered || isPinned;
 
@@ -97,10 +99,9 @@ export function Sidebar({ isPinned, onPinChange }: SidebarProps) {
       <div className="flex-1 flex flex-col w-full space-y-2 overflow-y-auto overflow-x-hidden">
         <div className="space-y-1 px-2">
             <SectionTitle text="Library" isExpanded={isExpanded} />
-            <NavLink href="#" icon={<Home size={20} />} text="Home" active={true} isExpanded={isExpanded} />
-            <NavLink href="#" icon={<Library size={20} />} text="Files" isExpanded={isExpanded} />
-            <NavLink href="#" icon={<Bookmark size={20} />} text="Saved" isExpanded={isExpanded} />
-            <NavLink href="#" icon={<Trash2 size={20} />} text="Trash" isExpanded={isExpanded} />
+            <NavLink href="/dashboard" icon={<Home size={20} />} text="Home" active={location.pathname === '/dashboard'} isExpanded={isExpanded} />
+            <NavLink href="/dashboard/decks" icon={<Library size={20} />} text="Decks" active={location.pathname === '/dashboard/decks'} isExpanded={isExpanded} />
+            <NavLink href="/dashboard/trash" icon={<Trash2 size={20} />} text="Trash" active={location.pathname === '/dashboard/trash'} isExpanded={isExpanded} />
         </div>
         <div className="mx-4 my-2 border-t border-border"></div>
         <div className="space-y-1 px-2">
