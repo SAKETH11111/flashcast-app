@@ -38,9 +38,20 @@ const initialDecks = [
 export type Deck = (typeof initialDecks)[number];
 export type DeckTitle = Deck["title"];
 
+const initialFolders = [
+  { id: 'folder-1', name: "Biology 101", deckCount: 5 },
+  { id: 'folder-2', name: "History of Rome", deckCount: 3 },
+  { id: 'folder-3', name: "Organic Chemistry", deckCount: 8 },
+  { id: 'folder-4', name: "Calculus II", deckCount: 2 },
+];
+
+export type Folder = (typeof initialFolders)[number];
+export type FolderId = Folder["id"];
+
 export default function DashboardLayout() {
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [decks, setDecks] = useState<Deck[]>(initialDecks);
+  const [folders, setFolders] = useState<Folder[]>(initialFolders);
 
   const handlePinToggle = (title: DeckTitle) => {
     let isPinned = false;
@@ -73,6 +84,11 @@ export default function DashboardLayout() {
       ) as Deck[]
     );
     toast.success(`${titles.length} deck${titles.length > 1 ? 's' : ''} restored`);
+  };
+
+  const handleTrashFolder = (folderId: FolderId) => {
+    setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId));
+    toast.error(`Folder moved to trash`);
   };
 
   return (
@@ -151,7 +167,7 @@ export default function DashboardLayout() {
             </div>
           </div>
         </header>
-        <Outlet context={{ decks, handlePinToggle, handleTrash, handleRestore }} />
+        <Outlet context={{ decks, folders, handlePinToggle, handleTrash, handleRestore, handleTrashFolder }} />
       </div>
     </div>
   );
@@ -160,8 +176,10 @@ export default function DashboardLayout() {
 export function useDashboard() {
     return useOutletContext<{
         decks: Deck[];
+        folders: Folder[];
         handlePinToggle: (title: DeckTitle) => void;
         handleTrash: (titles: DeckTitle[]) => void;
         handleRestore: (titles: DeckTitle[]) => void;
+        handleTrashFolder: (folderId: FolderId) => void;
     }>();
 }

@@ -89,11 +89,11 @@ export function DeckListItem({ title, updated, type, tags, pinned, isSelected, o
             )}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={(e) => e.stopPropagation()}>
                         <MoreVertical className="w-4 h-4" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-card border-border">
+                <DropdownMenuContent align="end" className="bg-card border-border" onPointerDown={(e) => e.stopPropagation()}>
                     {isTrash ? (
                         <>
                             <DropdownMenuItem onClick={onRestore}><Undo className="w-4 h-4 mr-2" />Restore</DropdownMenuItem>

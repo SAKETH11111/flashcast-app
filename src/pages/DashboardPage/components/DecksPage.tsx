@@ -26,24 +26,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useDashboard } from "../DashboardLayout.tsx";
-import type { Deck, DeckTitle } from "../DashboardLayout.tsx";
+import type { Deck, DeckTitle, Folder } from "../DashboardLayout.tsx";
 
 type DeckType = Deck["type"];
 
 export function DecksPage() {
-  const { decks, handlePinToggle, handleTrash } = useDashboard();
+  const { decks, folders, handlePinToggle, handleTrash, handleTrashFolder } = useDashboard();
   const [view, setView] = useState<"grid" | "list">("grid");
   const [selectedTypes, setSelectedTypes] = useState<Set<DeckType>>(new Set());
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedDecks, setSelectedDecks] = useState<Set<DeckTitle>>(new Set());
-
-  const [folders, setFolders] = useState([
-    { id: 'folder-1', name: "Biology 101", deckCount: 5 },
-    { id: 'folder-2', name: "History of Rome", deckCount: 3 },
-    { id: 'folder-3', name: "Organic Chemistry", deckCount: 8 },
-    { id: 'folder-4', name: "Calculus II", deckCount: 2 },
-  ]);
 
   const activeDecks = useMemo(() => decks.filter(d => d.status === 'active'), [decks]);
 
@@ -86,7 +79,6 @@ export function DecksPage() {
     if (over && over.id.toString().startsWith('folder-')) {
       const folderId = over.id;
       const deckId = active.id;
-      console.log(`Deck ${deckId} was dropped on folder ${folderId}`);
       // Here you would update the state to move the deck into the folder
     }
   }
@@ -192,7 +184,7 @@ export function DecksPage() {
         <h2 className="text-2xl font-bold mb-6 text-left">Folders</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {folders.map((folder) => (
-            <FolderCard key={folder.id} id={folder.id} name={folder.name} deckCount={folder.deckCount} />
+            <FolderCard key={folder.id} {...folder} onTrash={() => handleTrashFolder(folder.id)} />
           ))}
         </div>
       </div>
@@ -211,6 +203,7 @@ export function DecksPage() {
                     onSelect={isSelectMode ? () => handleDeckSelect(deck.title) : undefined}
                     onPinToggle={() => handlePinToggle(deck.title)}
                     onTrash={() => handleTrash([deck.title])}
+                    isSelectMode={isSelectMode}
                 />
             ))}
             </div>
