@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { DndContext, type DragEndEvent } from '@dnd-kit/core';
 import { Button } from "@/components/ui/button";
 import {
   FileStack,
@@ -15,6 +16,7 @@ import {
   Merge,
 } from "lucide-react";
 import { DeckCard } from "./DeckCard.tsx";
+import { FolderCard } from "./FolderCard.tsx";
 import { DeckListItem } from "./DeckListItem.tsx";
 import {
   DropdownMenu,
@@ -35,6 +37,13 @@ export function DecksPage() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedDecks, setSelectedDecks] = useState<Set<DeckTitle>>(new Set());
+
+  const [folders, setFolders] = useState([
+    { id: 'folder-1', name: "Biology 101", deckCount: 5 },
+    { id: 'folder-2', name: "History of Rome", deckCount: 3 },
+    { id: 'folder-3', name: "Organic Chemistry", deckCount: 8 },
+    { id: 'folder-4', name: "Calculus II", deckCount: 2 },
+  ]);
 
   const activeDecks = useMemo(() => decks.filter(d => d.status === 'active'), [decks]);
 
@@ -72,6 +81,16 @@ export function DecksPage() {
     setIsSelectMode(false);
   }
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { over, active } = event;
+    if (over && over.id.toString().startsWith('folder-')) {
+      const folderId = over.id;
+      const deckId = active.id;
+      console.log(`Deck ${deckId} was dropped on folder ${folderId}`);
+      // Here you would update the state to move the deck into the folder
+    }
+  }
+
   const filteredDecks = useMemo(() => activeDecks
     .filter(deck => selectedTypes.size === 0 || selectedTypes.has(deck.type))
     .sort((a, b) => {
@@ -90,11 +109,12 @@ export function DecksPage() {
   );
 
   return (
-    <div className="flex-1 px-8 py-10 text-white">
-      <div>
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-bold">Decks</h1>
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="flex-1 px-64 py-10 text-white">
+        <div className="w-full">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+        <h1 className="text-4xl font-bold text-left">Decks</h1>
         <div className="flex items-center gap-4">
             {isSelectMode ? (
                 <Button variant="outline" className="bg-transparent text-white border-neutral-700 hover:bg-neutral-800 hover:text-white" onClick={() => { setIsSelectMode(false); setSelectedDecks(new Set()); }}>
@@ -167,13 +187,25 @@ export function DecksPage() {
         </div>
       )}
 
+      {/* Folders Content */}
+      <div className="mb-12 w-full">
+        <h2 className="text-2xl font-bold mb-6 text-left">Folders</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {folders.map((folder) => (
+            <FolderCard key={folder.id} id={folder.id} name={folder.name} deckCount={folder.deckCount} />
+          ))}
+        </div>
+      </div>
+
       {/* Decks Content */}
-      <div>
+      <div className="w-full">
+        <h2 className="text-2xl font-bold mb-6 text-left">Decks</h2>
         {view === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredDecks.map((deck) => (
                 <DeckCard
                     key={deck.title}
+                    id={deck.title}
                     {...deck}
                     isSelected={selectedDecks.has(deck.title)}
                     onSelect={isSelectMode ? () => handleDeckSelect(deck.title) : undefined}
@@ -218,5 +250,6 @@ export function DecksPage() {
         </div>
       </div>
     </div>
+    </DndContext>
   );
 }

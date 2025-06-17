@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Globe, Pin, MoreVertical, FileText, TestTube2, BookOpen, Check, Copy, Pen, Printer, FolderInput, ExternalLink, Tag, Merge, Download, Trash2, Undo } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface DeckCardProps {
+  id: string;
   title: string;
   updated: string;
   type: "Flashcards" | "Notes" | "Exam";
@@ -27,25 +30,38 @@ const typeIcons = {
     Flashcards: <BookOpen className="w-4 h-4 mr-2" />,
     Notes: <FileText className="w-4 h-4 mr-2" />,
     Exam: <TestTube2 className="w-4 h-4 mr-2" />,
-}
-
-const typeColors = {
-    Flashcards: "bg-blue-500/20 text-blue-300",
-    Notes: "bg-green-500/20 text-green-300",
-    Exam: "bg-purple-500/20 text-purple-300",
-}
-
-export function DeckCard({ title, updated, type, termCount, pinned, isSelected, onSelect, onPinToggle, onTrash, onRestore, isTrash = false }: DeckCardProps) {
-  return (
-    <div
-        className={cn(
-            "bg-card border rounded-3xl p-6 flex flex-col justify-between h-64 hover:border-primary/50 transition-all duration-150 cursor-pointer relative text-left",
-            isSelected ? "border-primary/80" : "border-border/20"
-        )}
-        onClick={onSelect ? onSelect : () => {}}
-    >
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-4">
+  }
+  
+  const typeColors = {
+      Flashcards: "bg-blue-500/20 text-blue-300",
+      Notes: "bg-green-500/20 text-green-300",
+      Exam: "bg-purple-500/20 text-purple-300",
+  }
+  
+  export function DeckCard({ id, title, updated, type, termCount, pinned, isSelected, onSelect, onPinToggle, onTrash, onRestore, isTrash = false }: DeckCardProps) {
+    const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
+      id: id,
+    });
+    const style = {
+      transform: CSS.Translate.toString(transform),
+      zIndex: isDragging ? 100 : 'auto',
+      opacity: isDragging ? 0.5 : 1,
+    };
+  
+    return (
+      <div
+          ref={setNodeRef}
+          style={style}
+          {...attributes}
+          {...listeners}
+          className={cn(
+              "bg-card border rounded-3xl p-6 flex flex-col justify-between h-64 hover:border-primary/50 transition-all duration-150 relative text-left",
+              isSelected ? "border-primary/80" : "border-border/20"
+          )}
+          onClick={onSelect ? onSelect : () => {}}
+      >
+        <div className="flex-1">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
                 {onSelect && (
                     <button
