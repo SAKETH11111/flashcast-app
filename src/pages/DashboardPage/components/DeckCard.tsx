@@ -97,10 +97,10 @@ const typeIcons = {
                           <Check className="w-4 h-4" />
                       </button>
                   )}
-                  <a href="#" className="flex-grow" onClick={(e) => e.stopPropagation()}>
-                      <h3 className="font-bold text-base text-foreground truncate hover:underline">{title}</h3>
+                  <div className="flex-grow" onClick={(e) => e.stopPropagation()}>
+                      <h3 className="font-bold text-base text-foreground truncate">{title}</h3>
                       <p className="text-xs text-muted-foreground">Updated {updated}</p>
-                  </a>
+                  </div>
               </div>
           </div>
           <div className="mb-4">

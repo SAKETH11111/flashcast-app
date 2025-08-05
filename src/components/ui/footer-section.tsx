@@ -3,22 +3,16 @@ import { useEffect, useRef } from 'react';
 import type { ComponentProps, ReactNode } from 'react';
 import { motion, useReducedMotion, animate, stagger } from 'motion/react';
 import { splitText } from 'motion-plus';
-import { FacebookIcon, FrameIcon, InstagramIcon, LinkedinIcon, YoutubeIcon } from 'lucide-react';
+import { FrameIcon } from 'lucide-react';
 
 const essentialLinks = [
-	{ title: 'Features', href: '#features' },
-	{ title: 'Pricing', href: '#pricing' },
-	{ title: 'About Us', href: '/about' },
-	{ title: 'Help', href: '/help' },
-	{ title: 'Privacy', href: '/privacy' },
+	{ title: 'Features', href: '/features' },
+	{ title: 'Dashboard', href: '/dashboard' },
+	{ title: 'Get Started', href: '/signin' },
 ];
 
-const socialLinks = [
-	{ title: 'Facebook', href: '#', icon: FacebookIcon },
-	{ title: 'Instagram', href: '#', icon: InstagramIcon },
-	{ title: 'Youtube', href: '#', icon: YoutubeIcon },
-	{ title: 'LinkedIn', href: '#', icon: LinkedinIcon },
-];
+// Remove social links for now since they don't go anywhere
+const socialLinks: any[] = [];
 
 function SplitTextBrand() {
 	const containerRef = useRef<HTMLDivElement>(null);

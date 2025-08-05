@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { Home, User, Briefcase, FileText } from "lucide-react";
+import { Home, Briefcase } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 import { NavBar } from '@/components/ui/tubelight-navbar';
 import HeroSection from './components/HeroSection';
 import FeatureShowcase from './components/FeatureShowcase';
@@ -11,12 +12,17 @@ import MagneticButton from '@/components/ui/magnetic-button';
 
 const navItems = [
   { name: 'Home', url: '/', icon: Home },
-  { name: 'About', url: '#', icon: User },
-  { name: 'Features', url: '/features', icon: Briefcase },
-  { name: 'Decks', url: '#', icon: FileText }
+  { name: 'Features', url: '/features', icon: Briefcase }
 ];
 
 const FeaturesPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    // Navigate to dashboard - users can sign in from there if needed
+    navigate('/dashboard');
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NavBar items={navItems} />
@@ -27,7 +33,7 @@ const FeaturesPage: React.FC = () => {
       <div className="container mx-auto px-4 py-12 md:py-20 flex justify-center">
         <MagneticButton
           className="button"
-          onClick={() => {}}
+          onClick={handleGetStarted}
         >
           Get Started with FlashCast
         </MagneticButton>

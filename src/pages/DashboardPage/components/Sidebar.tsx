@@ -13,27 +13,53 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const NavLink = ({ href, icon, text, active = false, isExpanded, tag }: { href: string; icon: React.ReactNode; text: string; active?: boolean; isExpanded: boolean; tag?: string; }) => (
-  <Link
-    to={href}
-    className={cn(
-      "flex items-center h-10 w-full rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-accent",
-      active && "text-primary bg-primary/10",
-    )}
-  >
-    <div className="w-14 flex-shrink-0 flex items-center justify-center">
-        {icon}
-    </div>
-    <span className={cn("truncate min-w-0 transition-opacity duration-300 ease-in-out", isExpanded ? "opacity-100" : "opacity-0")}>
-      {text}
-    </span>
-    {isExpanded && tag && (
-      <span className={cn("ml-auto mr-4 text-xs font-semibold bg-primary/10 text-primary rounded-full px-2 py-0.5 transition-opacity duration-300 ease-in-out whitespace-nowrap", isExpanded ? "opacity-100" : "opacity-0")}>
-        {tag}
+const NavLink = ({ href, icon, text, active = false, isExpanded, tag }: { href: string; icon: React.ReactNode; text: string; active?: boolean; isExpanded: boolean; tag?: string; }) => {
+  // If it has a "Soon" tag, make it non-clickable
+  if (tag === "Soon") {
+    return (
+      <div
+        className={cn(
+          "flex items-center h-10 w-full rounded-lg transition-colors text-muted-foreground opacity-50 cursor-not-allowed",
+          active && "text-primary bg-primary/10",
+        )}
+      >
+        <div className="w-14 flex-shrink-0 flex items-center justify-center">
+            {icon}
+        </div>
+        <span className={cn("truncate min-w-0 transition-opacity duration-300 ease-in-out", isExpanded ? "opacity-100" : "opacity-0")}>
+          {text}
+        </span>
+        {isExpanded && tag && (
+          <span className={cn("ml-auto mr-4 text-xs font-semibold bg-muted text-muted-foreground rounded-full px-2 py-0.5 transition-opacity duration-300 ease-in-out whitespace-nowrap", isExpanded ? "opacity-100" : "opacity-0")}>
+            {tag}
+          </span>
+        )}
+      </div>
+    );
+  }
+  
+  return (
+    <Link
+      to={href}
+      className={cn(
+        "flex items-center h-10 w-full rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-accent",
+        active && "text-primary bg-primary/10",
+      )}
+    >
+      <div className="w-14 flex-shrink-0 flex items-center justify-center">
+          {icon}
+      </div>
+      <span className={cn("truncate min-w-0 transition-opacity duration-300 ease-in-out", isExpanded ? "opacity-100" : "opacity-0")}>
+        {text}
       </span>
-    )}
-  </Link>
-);
+      {isExpanded && tag && (
+        <span className={cn("ml-auto mr-4 text-xs font-semibold bg-primary/10 text-primary rounded-full px-2 py-0.5 transition-opacity duration-300 ease-in-out whitespace-nowrap", isExpanded ? "opacity-100" : "opacity-0")}>
+          {tag}
+        </span>
+      )}
+    </Link>
+  );
+};
 
 const SectionTitle = ({ text, isExpanded }: { text:string; isExpanded: boolean }) => (
     <h2 className={cn(

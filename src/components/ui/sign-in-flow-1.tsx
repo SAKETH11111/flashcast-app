@@ -7,7 +7,7 @@ import { useGoogleLogin, type TokenResponse } from '@react-oauth/google';
 import { cn } from "@/lib/utils";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { NavBar } from "./tubelight-navbar";
-import { Home, User, Briefcase, FileText } from "lucide-react";
+import { Home, Briefcase } from "lucide-react";
 
 import * as THREE from "three";
 
@@ -45,9 +45,7 @@ interface SignInPageProps {
 
 const navItems = [
   { name: 'Home', url: '/', icon: Home },
-  { name: 'About', url: '#', icon: User },
-  { name: 'Features', url: '/features', icon: Briefcase },
-  { name: 'Decks', url: '#', icon: FileText }
+  { name: 'Features', url: '/features', icon: Briefcase }
 ];
       
 export const CanvasRevealEffect = ({
@@ -512,7 +510,7 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     </div>
                     
                     <p className="text-xs text-white/40 pt-10">
-                      By signing up, you agree to the <a href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Terms</a>, <a href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Policy</a>, and <a href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Policy</a>.
+                      By signing up, you agree to our Terms, Privacy Policy, and Cookie Policy.
                     </p>
                   </motion.div>
                 ) : step === "code" ? (
@@ -596,7 +594,7 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     
                     <div className="pt-16">
                       <p className="text-xs text-white/40">
-                        By signing up, you agree to the <a href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Terms</a>, <a href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Policy</a>, and <a href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Policy</a>.
+                        By signing up, you agree to our Terms, Privacy Policy, and Cookie Policy.
                       </p>
                     </div>
                   </motion.div>

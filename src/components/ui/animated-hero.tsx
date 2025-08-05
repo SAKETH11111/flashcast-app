@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MoveRight, Home, User, Briefcase, FileText } from "lucide-react";
+import { MoveRight, Home, Briefcase } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "./tubelight-navbar";
 import { FeatureBentoGrid } from "./FeatureBentoGrid";
 
 const navItems = [
   { name: 'Home', url: '/', icon: Home },
-  { name: 'About', url: '#', icon: User },
-  { name: 'Features', url: '/features', icon: Briefcase },
-  { name: 'Decks', url: '#', icon: FileText }
+  { name: 'Features', url: '/features', icon: Briefcase }
 ];
 
 function Hero() {
