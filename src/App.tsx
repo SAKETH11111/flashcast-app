@@ -1,8 +1,10 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import FeaturesPage from './pages/FeaturesPage';
 import StudyPage from './pages/StudyPage';
 import DashboardPage from './pages/DashboardPage';
+import CreateDeckPage from './pages/CreateDeckPage';
+import DeckDetailPage from './pages/DeckDetailPage';
 import { DecksPage } from './pages/DashboardPage/components/DecksPage';
 import { TrashPage } from './pages/DashboardPage/components/TrashPage';
 import DashboardLayout from './pages/DashboardPage/DashboardLayout';
@@ -30,10 +32,13 @@ function App() {
             <Route index element={<DashboardPage />} />
             <Route path="decks" element={<DecksPage />} />
             <Route path="trash" element={<TrashPage />} />
+            <Route path="create" element={<CreateDeckPage />} />
           </Route>
           <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/deck/:deckId" element={<DeckDetailPage />} />
           <Route path="/study/:deckId" element={<StudyPage />} />
           <Route path="/signin" element={<SignInPage />} />
+          <Route path="/create" element={<Navigate to="/dashboard/create" replace />} />
         </Routes>
       </div>
       <ScrollToTopButton />

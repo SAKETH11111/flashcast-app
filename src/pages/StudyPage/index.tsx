@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
@@ -94,11 +94,30 @@ const mockCards: FlashcardData[] = [
 const StudyPage: React.FC = () => {
   const { deckId } = useParams<{ deckId: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode') || 'flashcards';
+  
+  // Load cards from localStorage or use mock cards as fallback
+  const loadCardsForDeck = useCallback((deckTitle: string): FlashcardData[] => {
+    try {
+      const storedCards = localStorage.getItem(`flashcards_${deckTitle}`);
+      if (storedCards) {
+        return JSON.parse(storedCards);
+      }
+    } catch (error) {
+      console.error('Error loading cards from localStorage:', error);
+    }
+    // Return mock cards as fallback
+    return mockCards;
+  }, []);
+  
+  const deckTitle = deckId ? decodeURIComponent(deckId) : "Sample Biology Deck";
+  const cards = loadCardsForDeck(deckTitle);
   
   const [session, setSession] = useState<StudySession>({
     deckId: deckId || "sample",
-    deckName: "Sample Biology Deck",
-    cards: mockCards,
+    deckName: deckTitle,
+    cards: cards,
     currentIndex: 0,
     correctCount: 0,
     incorrectCount: 0
@@ -106,6 +125,24 @@ const StudyPage: React.FC = () => {
 
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState(0);
+
+  // Update session when deckId changes
+  useEffect(() => {
+    const newDeckTitle = deckId ? decodeURIComponent(deckId) : "Sample Biology Deck";
+    const newCards = loadCardsForDeck(newDeckTitle);
+    
+    setSession({
+      deckId: deckId || "sample",
+      deckName: newDeckTitle,
+      cards: newCards,
+      currentIndex: 0,
+      correctCount: 0,
+      incorrectCount: 0
+    });
+    
+    setIsFlipped(false);
+    setDirection(0);
+  }, [deckId, loadCardsForDeck]);
 
   const currentCard = session.cards[session.currentIndex];
 
@@ -189,7 +226,12 @@ const StudyPage: React.FC = () => {
   const handleExit = () => {
     const confirmExit = window.confirm("Are you sure you want to exit? Your progress will be lost.");
     if (confirmExit) {
-      navigate("/");
+      // Navigate back to deck detail page
+      if (deckId) {
+        navigate(`/deck/${encodeURIComponent(deckId)}`);
+      } else {
+        navigate("/dashboard");
+      }
     }
   };
 
@@ -201,7 +243,7 @@ const StudyPage: React.FC = () => {
           <p className="text-muted-foreground mb-6">
             Correct: {session.correctCount} | Incorrect: {session.incorrectCount}
           </p>
-          <Button onClick={() => navigate("/")}>Return Home</Button>
+          <Button onClick={() => deckId ? navigate(`/deck/${encodeURIComponent(deckId)}`) : navigate("/dashboard")}>Back to Deck</Button>
         </div>
       </div>
     );
@@ -230,12 +272,17 @@ const StudyPage: React.FC = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           
-          <ProgressBar
-            current={session.currentIndex + 1}
-            total={session.cards.length}
-            correctCount={session.correctCount}
-            incorrectCount={session.incorrectCount}
-          />
+          <div className="flex flex-col items-center">
+            <ProgressBar
+              current={session.currentIndex + 1}
+              total={session.cards.length}
+              correctCount={session.correctCount}
+              incorrectCount={session.incorrectCount}
+            />
+            <div className="text-xs text-muted-foreground mt-1 capitalize">
+              {mode} Mode
+            </div>
+          </div>
           
           <div className="w-10 h-10" />
         </div>

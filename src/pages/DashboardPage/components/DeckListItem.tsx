@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Pin, BookOpen, FileText, TestTube2, Check, Copy, Pen, Printer, Globe, FolderInput, ExternalLink, Tag, Merge, Download, Trash2, Undo } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +10,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { MoveToFolderDialog } from './MoveToFolderDialog';
+import type { Folder } from '../DashboardLayout';
 
 interface DeckListItemProps {
   title: string;
@@ -21,6 +25,8 @@ interface DeckListItemProps {
   onTrash: () => void;
   onRestore?: () => void;
   isTrash?: boolean;
+  onMoveToFolder?: (folderId: string | null) => void;
+  folders?: Folder[];
 }
 
 const typeIcons = {
@@ -35,7 +41,9 @@ const typeBgColors = {
     Exam: "bg-purple-500/10",
 }
 
-export function DeckListItem({ title, updated, type, tags, pinned, isSelected, onSelect, onPinToggle, onTrash, onRestore, isTrash = false }: DeckListItemProps) {
+export function DeckListItem({ title, updated, type, tags, pinned, isSelected, onSelect, onPinToggle, onTrash, onRestore, isTrash = false, onMoveToFolder, folders = [] }: DeckListItemProps) {
+  const navigate = useNavigate();
+  
   return (
     <tr
         className={cn("border-b-2 border-neutral-800 hover:bg-accent/50 cursor-pointer", isSelected && "bg-accent/50")}
@@ -82,7 +90,10 @@ export function DeckListItem({ title, updated, type, tags, pinned, isSelected, o
                     <Button variant="ghost" size="icon" className={cn("text-muted-foreground hover:text-foreground", pinned && "text-primary")} onClick={(e) => { e.stopPropagation(); onPinToggle(); }}>
                         <Pin className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/dashboard/create?edit=${encodeURIComponent(title)}`);
+                    }}>
                         <Pen className="w-4 h-4" />
                     </Button>
                 </>
@@ -97,18 +108,32 @@ export function DeckListItem({ title, updated, type, tags, pinned, isSelected, o
                     {isTrash ? (
                         <>
                             <DropdownMenuItem onClick={onRestore}><Undo className="w-4 h-4 mr-2" />Restore</DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-500"><Trash2 className="w-4 h-4 mr-2" />Delete</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-500" onClick={() => {
+                              if (confirm('Are you sure you want to permanently delete this deck? This action cannot be undone.')) {
+                                toast.error('Permanent delete functionality will be implemented soon');
+                              }
+                            }}><Trash2 className="w-4 h-4 mr-2" />Delete</DropdownMenuItem>
                         </>
                     ) : (
                         <>
-                            <DropdownMenuItem><Copy className="w-4 h-4 mr-2" />Duplicate</DropdownMenuItem>
-                            <DropdownMenuItem><Printer className="w-4 h-4 mr-2" />Export as PDF</DropdownMenuItem>
-                            <DropdownMenuItem><Globe className="w-4 h-4 mr-2" />Manage sharing</DropdownMenuItem>
-                            <DropdownMenuItem><FolderInput className="w-4 h-4 mr-2" />Move to</DropdownMenuItem>
-                            <DropdownMenuItem><ExternalLink className="w-4 h-4 mr-2" />Open in new tab</DropdownMenuItem>
-                            <DropdownMenuItem><Tag className="w-4 h-4 mr-2" />Edit tags</DropdownMenuItem>
-                            <DropdownMenuItem><Merge className="w-4 h-4 mr-2" />Combine</DropdownMenuItem>
-                            <DropdownMenuItem><Download className="w-4 h-4 mr-2" />Export</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.info('Duplicate deck feature coming soon!')}><Copy className="w-4 h-4 mr-2" />Duplicate</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.info('PDF export feature coming soon!')}><Printer className="w-4 h-4 mr-2" />Export as PDF</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.info('Sharing features coming soon!')}><Globe className="w-4 h-4 mr-2" />Manage sharing</DropdownMenuItem>
+                            {onMoveToFolder && (
+                              <MoveToFolderDialog 
+                                folders={folders} 
+                                onMoveToFolder={onMoveToFolder}
+                                trigger={
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <FolderInput className="w-4 h-4 mr-2" />Move to
+                                  </DropdownMenuItem>
+                                }
+                              />
+                            )}
+                            <DropdownMenuItem onClick={() => window.open(`/deck/${encodeURIComponent(title)}`, '_blank')}><ExternalLink className="w-4 h-4 mr-2" />Open in new tab</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.info('Edit tags feature coming soon!')}><Tag className="w-4 h-4 mr-2" />Edit tags</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.info('Combine decks feature coming soon!')}><Merge className="w-4 h-4 mr-2" />Combine</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.info('Export feature coming soon!')}><Download className="w-4 h-4 mr-2" />Export</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={onTrash} className="text-red-500"><Trash2 className="w-4 h-4 mr-2" />Trash this set</DropdownMenuItem>
                         </>

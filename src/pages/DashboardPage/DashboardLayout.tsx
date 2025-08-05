@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, useOutletContext, useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'sonner';
 import { Sidebar } from './components/Sidebar';
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import React from 'react';
+import type { FlashcardData } from '@/pages/StudyPage/types';
 
 const StreakIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg width="18" height="18" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -27,31 +28,74 @@ const DayCircle = ({ day, active, isToday }: { day: string, active: boolean, isT
   </div>
 );
 
-const initialDecks = [
-  { title: "(Draft) Untitled", updated: "6m ago", type: "Flashcards" as const, termCount: 4, lastUpdated: new Date(Date.now() - 6 * 60 * 1000), tags: ["Draft", "Biology"], pinned: false, status: 'active' as const },
-  { title: "Biology Midterm Review", updated: "2h ago", type: "Notes" as const, termCount: 42, lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000), tags: ["Midterm", "Biology"], pinned: true, status: 'active' as const },
-  { title: "History Final Exam", updated: "1d ago", type: "Exam" as const, termCount: 120, lastUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000), tags: ["Final", "History"], pinned: false, status: 'active' as const },
-  { title: "Organic Chemistry Deck", updated: "3d ago", type: "Flashcards" as const, termCount: 88, lastUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), tags: ["Chemistry", "Hard"], pinned: false, status: 'active' as const },
-  { title: "Deleted Deck 1", updated: "1h ago", type: "Flashcards" as const, termCount: 10, lastUpdated: new Date(Date.now() - 1 * 60 * 60 * 1000), tags: ["Deleted"], pinned: false, status: 'trashed' as const },
-];
+export type DeckType = "Flashcards" | "Notes" | "Exam";
+export type DeckStatus = "active" | "trashed";
 
-export type Deck = (typeof initialDecks)[number];
-export type DeckTitle = Deck["title"];
+export interface Deck {
+  title: string;
+  updated: string;
+  type: DeckType;
+  termCount: number;
+  lastUpdated: Date;
+  tags: string[];
+  pinned: boolean;
+  status: DeckStatus;
+  folderId?: string;
+}
+
+const initialDecks: Deck[] = [
+  { 
+    title: "Welcome to Flashcast!", 
+    updated: "Demo", 
+    type: "Flashcards", 
+    termCount: 5, 
+    lastUpdated: new Date(), 
+    tags: ["Demo", "Tutorial"], 
+    pinned: false, 
+    status: 'active'
+  },
+];
+export type DeckTitle = string;
 
 const initialFolders = [
-  { id: 'folder-1', name: "Biology 101", deckCount: 5 },
-  { id: 'folder-2', name: "History of Rome", deckCount: 3 },
-  { id: 'folder-3', name: "Organic Chemistry", deckCount: 8 },
-  { id: 'folder-4', name: "Calculus II", deckCount: 2 },
+  { id: 'folder-1', name: "My Study Folders", deckCount: 0 },
 ];
 
 export type Folder = (typeof initialFolders)[number];
 export type FolderId = Folder["id"];
 
 export default function DashboardLayout() {
+  const navigate = useNavigate();
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [decks, setDecks] = useState<Deck[]>(initialDecks);
   const [folders, setFolders] = useState<Folder[]>(initialFolders);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentFolder, setCurrentFolder] = useState<string | null>(null);
+
+  // Initialize demo flashcards for welcome deck and update folder deck counts
+  useEffect(() => {
+    const demoCards: FlashcardData[] = [
+      { id: '1', term: 'Flashcast', definition: 'An AI-powered flashcard study app that helps you learn more effectively' },
+      { id: '2', term: 'Spaced Repetition', definition: 'A learning technique that shows you cards just before you would forget them' },
+      { id: '3', term: 'Active Recall', definition: 'The practice of actively retrieving information from memory to strengthen learning' },
+      { id: '4', term: 'Study Modes', definition: 'Different ways to study your cards: Learn, Practice Test, Match, and more' },
+      { id: '5', term: 'Voice Commands', definition: 'Use voice to flip cards and navigate - try saying "flip" or "next"!' }
+    ];
+    
+    // Only set demo cards if they don't exist
+    const existingCards = localStorage.getItem('flashcards_Welcome to Flashcast!');
+    if (!existingCards) {
+      localStorage.setItem('flashcards_Welcome to Flashcast!', JSON.stringify(demoCards));
+    }
+  }, []);
+
+  // Update folder deck counts
+  useEffect(() => {
+    setFolders(prevFolders => prevFolders.map(folder => {
+      const deckCount = decks.filter(deck => deck.folderId === folder.id && deck.status === 'active').length;
+      return { ...folder, deckCount };
+    }));
+  }, [decks]);
 
   const handlePinToggle = (title: DeckTitle) => {
     let isPinned = false;
@@ -87,8 +131,79 @@ export default function DashboardLayout() {
   };
 
   const handleTrashFolder = (folderId: FolderId) => {
+    // Move all decks in this folder back to root
+    setDecks(prevDecks => prevDecks.map(deck => 
+      deck.folderId === folderId ? { ...deck, folderId: undefined } : deck
+    ));
     setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId));
+    // If we're currently viewing this folder, go back to root
+    if (currentFolder === folderId) {
+      setCurrentFolder(null);
+    }
     toast.error(`Folder moved to trash`);
+  };
+
+  const handleCreateFolder = (name: string) => {
+    const newFolder: Folder = {
+      id: `folder-${Date.now()}`,
+      name,
+      deckCount: 0
+    };
+    setFolders(prevFolders => [...prevFolders, newFolder]);
+    toast.success(`Folder "${name}" created`);
+    return newFolder.id;
+  };
+
+  const handleRenameFolder = (folderId: FolderId, newName: string) => {
+    setFolders(prevFolders => prevFolders.map(folder => 
+      folder.id === folderId ? { ...folder, name: newName } : folder
+    ));
+    toast.success(`Folder renamed to "${newName}"`);
+  };
+
+  const handleMoveDeckToFolder = (deckTitle: DeckTitle, folderId: string | null) => {
+    setDecks(prevDecks => prevDecks.map(deck => 
+      deck.title === deckTitle ? { ...deck, folderId: folderId || undefined } : deck
+    ));
+    const folderName = folderId ? folders.find(f => f.id === folderId)?.name : 'root';
+    toast.success(`Deck moved to ${folderName || 'root'}`);
+  };
+
+  const handleMoveDecksToFolder = (deckTitles: DeckTitle[], folderId: string | null) => {
+    setDecks(prevDecks => prevDecks.map(deck => 
+      deckTitles.includes(deck.title) ? { ...deck, folderId: folderId || undefined } : deck
+    ));
+    const folderName = folderId ? folders.find(f => f.id === folderId)?.name : 'root';
+    toast.success(`${deckTitles.length} deck${deckTitles.length > 1 ? 's' : ''} moved to ${folderName || 'root'}`);
+  };
+
+  const handleOpenFolder = (folderId: string) => {
+    setCurrentFolder(folderId);
+  };
+
+  const handleBackToRoot = () => {
+    setCurrentFolder(null);
+  };
+
+  const handlePermanentDelete = (titles: DeckTitle[]) => {
+    setDecks(prevDecks => prevDecks.filter(deck => !titles.includes(deck.title)));
+    // Also remove from localStorage if it's the demo deck
+    titles.forEach(title => {
+      localStorage.removeItem(`flashcards_${title}`);
+    });
+    toast.error(`${titles.length} deck${titles.length > 1 ? 's' : ''} permanently deleted`);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const addDeck = (newDeck: Omit<Deck, 'lastUpdated'> & { lastUpdated?: Date }) => {
+    const deckWithDate = {
+      ...newDeck,
+      lastUpdated: newDeck.lastUpdated || new Date()
+    } as Deck;
+    setDecks(prevDecks => [deckWithDate, ...prevDecks]);
   };
 
   return (
@@ -116,12 +231,17 @@ export default function DashboardLayout() {
                 <input
                   type="text"
                   placeholder="Search for anything"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-input border-transparent rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <button className="w-10 h-10 bg-primary hover:bg-primary/90 rounded-lg flex items-center justify-center text-primary-foreground transition-colors">
+              <button 
+                onClick={() => navigate('/dashboard/create')}
+                className="w-10 h-10 bg-primary hover:bg-primary/90 rounded-lg flex items-center justify-center text-primary-foreground transition-colors"
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="M12 5v14" />
@@ -148,15 +268,28 @@ export default function DashboardLayout() {
                         ))}
                       </div>
                       <div className="flex justify-between w-full">
-                        <button className="text-sm font-bold text-muted-foreground hover:text-foreground">How to earn a streak</button>
-                        <button className="text-sm font-bold text-white bg-primary px-4 py-2 rounded-full">View Calendar</button>
+                        <button 
+                          onClick={() => toast.info('Streak help coming soon!')}
+                          className="text-sm font-bold text-muted-foreground hover:text-foreground"
+                        >
+                          How to earn a streak
+                        </button>
+                        <button 
+                          onClick={() => toast.info('Calendar feature coming soon!')}
+                          className="text-sm font-bold text-white bg-primary px-4 py-2 rounded-full"
+                        >
+                          View Calendar
+                        </button>
                       </div>
                     </div>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <div className="flex items-center gap-2">
-                <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                <button 
+                  onClick={() => toast.info('Notifications feature coming soon!')}
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
                   <Bell size={20} />
                 </button>
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground">
@@ -167,7 +300,24 @@ export default function DashboardLayout() {
             </div>
           </div>
         </header>
-        <Outlet context={{ decks, folders, handlePinToggle, handleTrash, handleRestore, handleTrashFolder }} />
+        <Outlet context={{ 
+          decks, 
+          folders, 
+          currentFolder, 
+          handlePinToggle, 
+          handleTrash, 
+          handleRestore, 
+          handleTrashFolder, 
+          handlePermanentDelete, 
+          addDeck, 
+          searchQuery,
+          handleCreateFolder,
+          handleRenameFolder,
+          handleMoveDeckToFolder,
+          handleMoveDecksToFolder,
+          handleOpenFolder,
+          handleBackToRoot
+        }} />
       </div>
     </div>
   );
@@ -177,9 +327,19 @@ export function useDashboard() {
     return useOutletContext<{
         decks: Deck[];
         folders: Folder[];
+        currentFolder: string | null;
         handlePinToggle: (title: DeckTitle) => void;
         handleTrash: (titles: DeckTitle[]) => void;
         handleRestore: (titles: DeckTitle[]) => void;
         handleTrashFolder: (folderId: FolderId) => void;
+        handlePermanentDelete: (titles: DeckTitle[]) => void;
+        addDeck: (newDeck: Omit<Deck, 'lastUpdated'> & { lastUpdated?: Date }) => void;
+        searchQuery: string;
+        handleCreateFolder: (name: string) => string;
+        handleRenameFolder: (folderId: FolderId, newName: string) => void;
+        handleMoveDeckToFolder: (deckTitle: DeckTitle, folderId: string | null) => void;
+        handleMoveDecksToFolder: (deckTitles: DeckTitle[], folderId: string | null) => void;
+        handleOpenFolder: (folderId: string) => void;
+        handleBackToRoot: () => void;
     }>();
 }

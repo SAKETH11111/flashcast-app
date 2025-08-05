@@ -1,5 +1,7 @@
 import { Upload, Mic, FileText, BookOpen } from 'lucide-react';
 import { Meteors } from '@/components/ui/meteors';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface CreateCardProps {
   icon: React.ReactNode;
@@ -47,18 +49,37 @@ function CreateCard({ icon, title, description, accentColor, onClick, isSpecial 
 }
 
 export function CreateSection() {
+  const navigate = useNavigate();
+
+  const handleCreateClick = (cardTitle: string) => {
+    if (cardTitle.includes("recording")) {
+      // Show under development message for voice features
+      toast.info("🎤 Voice recording feature is under development. Coming soon!", {
+        description: "We're working hard to bring you AI-powered voice recording capabilities."
+      });
+    } else if (cardTitle.includes("Upload")) {
+      // Show coming soon for upload features
+      toast.info("📤 Upload features coming soon!", {
+        description: "PDF, PPT, Video, and Audio upload will be available in the next update."
+      });
+    } else {
+      // Navigate to create page for manual creation
+      navigate("/dashboard/create");
+    }
+  };
+
   const createCards = [
     {
       icon: <Upload size={24} className="text-purple-400" />,
       title: "Upload a PDF, PPT, Video, or Audio",
-      description: "Get flashcards or notes instantly.",
+      description: "Get flashcards or notes instantly. (Coming Soon)",
       accentColor: "bg-purple-500/10",
       isSpecial: true,
     },
     {
       icon: <Mic size={24} className="text-red-400" />,
       title: "Create from live recording",
-      description: "Start a live lecture recording now.",
+      description: "Start a live lecture recording now. (Under Development)",
       accentColor: "bg-red-500/10",
     },
     {
@@ -87,6 +108,7 @@ export function CreateSection() {
             description={card.description}
             accentColor={card.accentColor}
             isSpecial={card.isSpecial}
+            onClick={() => handleCreateClick(card.title)}
           />
         ))}
       </div>

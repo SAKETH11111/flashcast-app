@@ -21,12 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useDashboard } from "../DashboardLayout.tsx";
-import type { Deck, DeckTitle } from "../DashboardLayout.tsx";
-
-type DeckType = Deck["type"];
+import type { DeckTitle, DeckType } from "../DashboardLayout.tsx";
 
 export function TrashPage() {
-  const { decks, handleRestore } = useDashboard();
+  const { decks, handleRestore, handlePermanentDelete } = useDashboard();
   const [view, setView] = useState<"grid" | "list">("grid");
   const [selectedTypes, setSelectedTypes] = useState<Set<DeckType>>(new Set());
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -76,6 +74,14 @@ export function TrashPage() {
     setIsSelectMode(false);
   }
 
+  const handlePermanentDeleteClick = () => {
+    if (confirm(`Are you sure you want to permanently delete ${selectedTrashItems.size} deck${selectedTrashItems.size > 1 ? 's' : ''}? This action cannot be undone.`)) {
+      handlePermanentDelete(Array.from(selectedTrashItems));
+      setSelectedTrashItems(new Set());
+      setIsSelectMode(false);
+    }
+  }
+
   const ActionButton = ({ icon, text, count, onClick, disabled }: { icon: React.ReactNode, text: string, count: number, onClick?: () => void, disabled?: boolean }) => (
     <Button variant="ghost" className="text-muted-foreground hover:text-foreground gap-2 px-3" onClick={onClick} disabled={disabled}>
         {count > 0 && <div className="w-5 h-5 bg-foreground text-background text-xs font-bold rounded-full flex items-center justify-center">{count}</div>}
@@ -112,7 +118,7 @@ export function TrashPage() {
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
             <div className="flex items-center gap-2 flex-wrap">
                 <ActionButton icon={<Undo className="w-5 h-5" />} text="Restore" count={selectedTrashItems.size} onClick={handleRestoreClick} disabled={selectedTrashItems.size === 0} />
-                <Button variant="ghost" className="text-red-500 hover:text-red-400 gap-2 px-3" disabled={selectedTrashItems.size === 0}>
+                <Button variant="ghost" className="text-red-500 hover:text-red-400 gap-2 px-3" disabled={selectedTrashItems.size === 0} onClick={handlePermanentDeleteClick}>
                     {selectedTrashItems.size > 0 && <div className="w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{selectedTrashItems.size}</div>}
                     <FileX2 className="w-5 h-5" />
                     Delete Permanently
@@ -163,8 +169,8 @@ export function TrashPage() {
             {filteredTrashItems.map((item) => (
                 <DeckCard
                     key={item.title}
+                    id={item.title}
                     {...item}
-                    type={item.type as "Flashcards" | "Notes" | "Exam"}
                     onTrash={() => {}}
                     onRestore={() => handleRestore([item.title])}
                     onPinToggle={() => {}}
@@ -197,7 +203,6 @@ export function TrashPage() {
                             <DeckListItem
                                 key={item.title}
                                 {...item}
-                                type={item.type as "Flashcards" | "Notes" | "Exam"}
                                 onTrash={() => {}}
                                 onRestore={() => handleRestore([item.title])}
                                 onPinToggle={() => {}}

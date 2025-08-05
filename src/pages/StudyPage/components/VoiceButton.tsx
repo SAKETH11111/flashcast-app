@@ -5,18 +5,25 @@ import { motion } from "framer-motion";
 import { Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface VoiceButtonProps {
   onVoiceToggle?: (isListening: boolean) => void;
 }
 
-const VoiceButton: React.FC<VoiceButtonProps> = ({ onVoiceToggle }) => {
-  const [isListening, setIsListening] = useState(false);
+const VoiceButton: React.FC<VoiceButtonProps> = () => {
+  const [isListening] = useState(false);
 
   const handleToggle = () => {
-    const newState = !isListening;
-    setIsListening(newState);
-    onVoiceToggle?.(newState);
+    // Show under development message instead of toggling
+    toast.info("🎤 Voice features are under development!", {
+      description: "Voice commands for studying will be available soon. Stay tuned!"
+    });
+    
+    // Uncomment below for actual functionality when implemented
+    // const newState = !isListening;
+    // setIsListening(newState);
+    // onVoiceToggle?.(newState);
   };
 
   return (

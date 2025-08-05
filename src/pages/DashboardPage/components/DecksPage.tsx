@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import {
   FileStack,
@@ -14,10 +15,14 @@ import {
   Share,
   Trash2,
   Merge,
+  BookOpen,
+  ArrowLeft,
 } from "lucide-react";
 import { DeckCard } from "./DeckCard.tsx";
 import { FolderCard } from "./FolderCard.tsx";
 import { DeckListItem } from "./DeckListItem.tsx";
+import { CreateFolderDialog } from "./CreateFolderDialog.tsx";
+import { MoveToFolderDialog } from "./MoveToFolderDialog.tsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,19 +31,45 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useDashboard } from "../DashboardLayout.tsx";
-import type { Deck, DeckTitle, Folder } from "../DashboardLayout.tsx";
-
-type DeckType = Deck["type"];
+import type { DeckTitle, DeckType } from "../DashboardLayout.tsx";
+import { toast } from "sonner";
 
 export function DecksPage() {
-  const { decks, folders, handlePinToggle, handleTrash, handleTrashFolder } = useDashboard();
+  const navigate = useNavigate();
+  const { 
+    decks, 
+    folders, 
+    currentFolder, 
+    handlePinToggle, 
+    handleTrash, 
+    handleTrashFolder, 
+    handleCreateFolder,
+    handleRenameFolder,
+    handleMoveDeckToFolder,
+    handleMoveDecksToFolder,
+    handleOpenFolder,
+    handleBackToRoot,
+    searchQuery 
+  } = useDashboard();
   const [view, setView] = useState<"grid" | "list">("grid");
   const [selectedTypes, setSelectedTypes] = useState<Set<DeckType>>(new Set());
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedDecks, setSelectedDecks] = useState<Set<DeckTitle>>(new Set());
 
-  const activeDecks = useMemo(() => decks.filter(d => d.status === 'active'), [decks]);
+  const activeDecks = useMemo(() => {
+    const filtered = decks.filter(d => d.status === 'active');
+    // Filter by current folder
+    if (currentFolder) {
+      return filtered.filter(d => d.folderId === currentFolder);
+    } else {
+      return filtered.filter(d => !d.folderId); // Only show decks not in any folder
+    }
+  }, [decks, currentFolder]);
+
+  const currentFolderData = useMemo(() => {
+    return currentFolder ? folders.find(f => f.id === currentFolder) : null;
+  }, [currentFolder, folders]);
 
   const handleTypeChange = (type: DeckType) => {
     setSelectedTypes(prev => {
@@ -77,23 +108,29 @@ export function DecksPage() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
     if (over && over.id.toString().startsWith('folder-')) {
-      const folderId = over.id;
-      const deckId = active.id;
-      // Here you would update the state to move the deck into the folder
+      const deckTitle = active.id.toString();
+      const folderId = over.id.toString();
+      handleMoveDeckToFolder(deckTitle, folderId);
     }
   }
 
   const filteredDecks = useMemo(() => activeDecks
-    .filter(deck => selectedTypes.size === 0 || selectedTypes.has(deck.type))
+    .filter(deck => {
+      const matchesType = selectedTypes.size === 0 || selectedTypes.has(deck.type);
+      const matchesSearch = !searchQuery || 
+        deck.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        deck.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesType && matchesSearch;
+    })
     .sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
         if (sortOrder === 'asc') return a.lastUpdated.getTime() - b.lastUpdated.getTime();
         return b.lastUpdated.getTime() - a.lastUpdated.getTime();
-    }), [activeDecks, selectedTypes, sortOrder]);
+    }), [activeDecks, selectedTypes, sortOrder, searchQuery]);
 
-  const ActionButton = ({ icon, text, count }: { icon: React.ReactNode, text: string, count: number }) => (
-    <Button variant="ghost" className="text-muted-foreground hover:text-foreground gap-2 px-3">
+  const ActionButton = ({ icon, text, count, onClick }: { icon: React.ReactNode, text: string, count: number, onClick?: () => void }) => (
+    <Button variant="ghost" className="text-muted-foreground hover:text-foreground gap-2 px-3" onClick={onClick} disabled={count === 0}>
         {count > 0 && <div className="w-5 h-5 bg-foreground text-background text-xs font-bold rounded-full flex items-center justify-center">{count}</div>}
         {icon}
         {text}
@@ -106,8 +143,25 @@ export function DecksPage() {
         <div className="w-full">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-bold text-left">Decks</h1>
-        <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-2">
+            {currentFolder && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleBackToRoot}
+                  className="text-muted-foreground hover:text-foreground px-2 py-1 h-auto rounded-md flex items-center gap-1"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to all decks
+                </Button>
+              </div>
+            )}
+            <h1 className="text-4xl font-bold text-left">
+              {currentFolder ? currentFolderData?.name : 'Decks'}
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
             {isSelectMode ? (
                 <Button variant="outline" className="bg-transparent text-white border-neutral-700 hover:bg-neutral-800 hover:text-white" onClick={() => { setIsSelectMode(false); setSelectedDecks(new Set()); }}>
                     <X className="w-5 h-5 mr-2" />
@@ -119,7 +173,10 @@ export function DecksPage() {
                         <FileStack className="w-5 h-5 mr-2" />
                         Select multiple
                     </Button>
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    {!currentFolder && (
+                      <CreateFolderDialog onCreateFolder={handleCreateFolder} />
+                    )}
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => navigate('/dashboard/create')}>
                         <Plus className="w-5 h-5 mr-2" />
                         Create
                     </Button>
@@ -132,9 +189,20 @@ export function DecksPage() {
       {isSelectMode ? (
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
             <div className="flex items-center gap-2 flex-wrap">
-                <ActionButton icon={<FolderInput className="w-5 h-5" />} text="Move to" count={selectedDecks.size} />
-                <ActionButton icon={<Share className="w-5 h-5" />} text="Manage sharing" count={selectedDecks.size} />
-                <ActionButton icon={<Merge className="w-5 h-5" />} text="Merge set" count={selectedDecks.size} />
+                <MoveToFolderDialog 
+                  folders={folders} 
+                  onMoveToFolder={(folderId) => handleMoveDecksToFolder(Array.from(selectedDecks), folderId)}
+                  selectedCount={selectedDecks.size}
+                  trigger={
+                    <Button variant="ghost" className="text-muted-foreground hover:text-foreground gap-2 px-3" disabled={selectedDecks.size === 0}>
+                      {selectedDecks.size > 0 && <div className="w-5 h-5 bg-foreground text-background text-xs font-bold rounded-full flex items-center justify-center">{selectedDecks.size}</div>}
+                      <FolderInput className="w-5 h-5" />
+                      Move to
+                    </Button>
+                  }
+                />
+                <ActionButton icon={<Share className="w-5 h-5" />} text="Manage sharing" count={selectedDecks.size} onClick={() => toast.info('Sharing features coming soon!')} />
+                <ActionButton icon={<Merge className="w-5 h-5" />} text="Merge set" count={selectedDecks.size} onClick={() => toast.info('Merge decks feature coming soon!')} />
                 <Button variant="ghost" className="text-red-500 hover:text-red-400 gap-2 px-3" onClick={handleTrashClick} disabled={selectedDecks.size === 0}>
                     {selectedDecks.size > 0 && <div className="w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{selectedDecks.size}</div>}
                     <Trash2 className="w-5 h-5" />
@@ -179,20 +247,53 @@ export function DecksPage() {
         </div>
       )}
 
-      {/* Folders Content */}
-      <div className="mb-12 w-full">
-        <h2 className="text-2xl font-bold mb-6 text-left">Folders</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {folders.map((folder) => (
-            <FolderCard key={folder.id} {...folder} onTrash={() => handleTrashFolder(folder.id)} />
-          ))}
+      {/* Folders Content - Only show when not inside a folder */}
+      {!currentFolder && (
+        <div className="mb-12 w-full">
+          <h2 className="text-2xl font-bold mb-6 text-left">Folders</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {folders.map((folder) => (
+              <FolderCard 
+                key={folder.id} 
+                {...folder} 
+                onTrash={() => handleTrashFolder(folder.id)}
+                onClick={() => handleOpenFolder(folder.id)}
+                onRename={(newName) => handleRenameFolder(folder.id, newName)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Decks Content */}
       <div className="w-full">
-        <h2 className="text-2xl font-bold mb-6 text-left">Decks</h2>
-        {view === 'grid' ? (
+        <h2 className="text-2xl font-bold mb-6 text-left">
+          {currentFolder ? 'Decks in this folder' : 'Decks'}
+        </h2>
+        {filteredDecks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
+              <BookOpen className="w-12 h-12 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-foreground">
+              {currentFolder ? 'No decks in this folder' : 'No decks found'}
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              {currentFolder 
+                ? 'This folder is empty. Create a new deck or move existing decks here.'
+                : searchQuery 
+                  ? 'No decks match your search criteria.'
+                  : 'Get started by creating your first deck!'}
+            </p>
+            <Button 
+              onClick={() => navigate('/dashboard/create')} 
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Create Deck
+            </Button>
+          </div>
+        ) : view === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredDecks.map((deck) => (
                 <DeckCard
@@ -204,6 +305,8 @@ export function DecksPage() {
                     onPinToggle={() => handlePinToggle(deck.title)}
                     onTrash={() => handleTrash([deck.title])}
                     isSelectMode={isSelectMode}
+                    onMoveToFolder={(folderId) => handleMoveDeckToFolder(deck.title, folderId)}
+                    folders={folders}
                 />
             ))}
             </div>
@@ -234,6 +337,8 @@ export function DecksPage() {
                                 onSelect={isSelectMode ? () => handleDeckSelect(deck.title) : undefined}
                                 onPinToggle={() => handlePinToggle(deck.title)}
                                 onTrash={() => handleTrash([deck.title])}
+                                onMoveToFolder={(folderId) => handleMoveDeckToFolder(deck.title, folderId)}
+                                folders={folders}
                             />
                         ))}
                     </tbody>
