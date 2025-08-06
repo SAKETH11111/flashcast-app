@@ -16,8 +16,8 @@ const VoiceButton: React.FC<VoiceButtonProps> = () => {
 
   const handleToggle = () => {
     // Show under development message instead of toggling
-    toast.info("🎤 Voice features are under development!", {
-      description: "Voice commands for studying will be available soon. Stay tuned!"
+    toast.info("🎤 AI Voice Commands - Coming Soon!", {
+      description: "Voice-powered study features will be available soon. We're working hard to bring you AI-powered voice capabilities!"
     });
     
     // Uncomment below for actual functionality when implemented

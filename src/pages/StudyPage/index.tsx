@@ -5,6 +5,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
+import { Toaster } from "sonner";
 import { Flashcard } from "./components/Flashcard";
 import { StudyControls } from "./components/StudyControls";
 import { ProgressBar } from "./components/ProgressBar";
@@ -315,6 +316,13 @@ const StudyPage: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      <Toaster
+        position="top-center"
+        richColors
+        closeButton
+        duration={3000}
+      />
     </div>
   );
 };
