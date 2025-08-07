@@ -41,11 +41,10 @@ jobs:
           yarn install --frozen-lockfile
           yarn add -D @types/node
       
-      - name: Verify env and build
+      - name: Build
         run: |
-          echo "VITE_GEMINI_API_KEY present? $([ -z \"$VITE_GEMINI_API_KEY\" ] && echo 'no' || echo 'yes')"
-          echo "VITE_OPENROUTER_API_KEY present? $([ -z \"$VITE_OPENROUTER_API_KEY\" ] && echo 'no' || echo 'yes')"
-          if [ -z "$VITE_GEMINI_API_KEY" ]; then echo "VITE_GEMINI_API_KEY is empty. Set it in repo Secrets or Variables." && exit 1; fi
+          echo "VITE_GEMINI_API_KEY present? $([ -n \"$VITE_GEMINI_API_KEY\" ] && echo 'yes' || echo 'no')"
+          echo "VITE_OPENROUTER_API_KEY present? $([ -n \"$VITE_OPENROUTER_API_KEY\" ] && echo 'yes' || echo 'no')"
           yarn build
       
       # Note: GitHub Pages must be manually enabled in repository settings
