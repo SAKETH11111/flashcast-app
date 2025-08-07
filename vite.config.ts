@@ -10,7 +10,8 @@ const __dirname = dirname(__filename)
 
 export default defineConfig({
   plugins: [react(), svgr()],
-  base: "/flashcast-app/",
+  // On Vercel (root domain), assets should be served from root
+  base: "/",
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
