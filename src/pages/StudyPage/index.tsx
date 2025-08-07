@@ -10,6 +10,7 @@ import { Flashcard } from "./components/Flashcard";
 import { StudyControls } from "./components/StudyControls";
 import { ProgressBar } from "./components/ProgressBar";
 import { VoiceButton } from "./components/VoiceButton";
+import { toast } from "sonner";
 import type { FlashcardData, StudySession } from "./types";
 
 export type { FlashcardData, StudySession } from "./types";
@@ -126,6 +127,7 @@ const StudyPage: React.FC = () => {
 
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [lastFlipByVoice, setLastFlipByVoice] = useState(false);
 
   // Update session when deckId changes
   useEffect(() => {
@@ -155,6 +157,7 @@ const StudyPage: React.FC = () => {
         currentIndex: prev.currentIndex + 1
       }));
       setIsFlipped(false);
+      setLastFlipByVoice(false);
     }
   }, [session.currentIndex, session.cards.length]);
 
@@ -166,10 +169,12 @@ const StudyPage: React.FC = () => {
         currentIndex: prev.currentIndex - 1
       }));
       setIsFlipped(false);
+      setLastFlipByVoice(false);
     }
   }, [session.currentIndex]);
 
   const handleFlip = useCallback(() => {
+    setLastFlipByVoice(false);
     setIsFlipped(prev => !prev);
   }, []);
 
@@ -189,6 +194,30 @@ const StudyPage: React.FC = () => {
       handleNext();
     }, 500);
   }, [handleNext]);
+
+  const handleVoiceEvaluated = useCallback(
+    (result: { isCorrect: boolean; analysis: string; transcript: string }) => {
+      // Flashcards mode: speak the term to flip. Flip regardless, but label correctness.
+      if (mode === 'flashcards') {
+        setLastFlipByVoice(true);
+        if (!isFlipped) setIsFlipped(true);
+        toast[result.isCorrect ? 'success' : 'warning'](
+          result.isCorrect ? 'Matched' : 'No match',
+          { description: result.analysis }
+        );
+        return;
+      }
+
+      // Other modes: definition grading; flip regardless and mark known/unknown
+      if (!isFlipped) setIsFlipped(true);
+      toast[result.isCorrect ? "success" : "warning"](
+        result.isCorrect ? "Correct" : "Not quite",
+        { description: result.analysis }
+      );
+      handleMarkKnown(result.isCorrect);
+    },
+    [handleMarkKnown, isFlipped, mode]
+  );
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -302,7 +331,12 @@ const StudyPage: React.FC = () => {
             />
             
             <div className="flex flex-col items-center space-y-6">
-              <VoiceButton />
+              <VoiceButton
+                term={currentCard.term}
+                definition={currentCard.definition}
+                mode={mode === 'flashcards' ? 'term' : 'definition'}
+                onEvaluated={handleVoiceEvaluated}
+              />
               <StudyControls
                 isFlipped={isFlipped}
                 onFlip={handleFlip}
@@ -311,6 +345,7 @@ const StudyPage: React.FC = () => {
                 canGoBack={session.currentIndex > 0}
                 canGoForward={session.currentIndex < session.cards.length - 1}
                 onMarkKnown={handleMarkKnown}
+                showAssessmentButtons={mode !== 'flashcards' || (isFlipped && !lastFlipByVoice)}
               />
             </div>
           </div>

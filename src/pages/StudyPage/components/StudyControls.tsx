@@ -20,6 +20,7 @@ interface StudyControlsProps {
   onNext: () => void;
   onFlip: () => void;
   onMarkKnown: (known: boolean) => void;
+  showAssessmentButtons?: boolean;
 }
 
 const StudyControls: React.FC<StudyControlsProps> = ({
@@ -30,6 +31,7 @@ const StudyControls: React.FC<StudyControlsProps> = ({
   onNext,
   onFlip,
   onMarkKnown,
+  showAssessmentButtons = true,
 }) => {
   const buttonVariants = {
     hidden: { scale: 0, opacity: 0 },
@@ -47,8 +49,8 @@ const StudyControls: React.FC<StudyControlsProps> = ({
       <motion.div
         initial={{ height: 0, opacity: 0 }}
         animate={{ 
-          height: isFlipped ? "auto" : 0, 
-          opacity: isFlipped ? 1 : 0 
+          height: isFlipped && showAssessmentButtons ? "auto" : 0, 
+          opacity: isFlipped && showAssessmentButtons ? 1 : 0 
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="overflow-hidden"
@@ -192,7 +194,7 @@ const StudyControls: React.FC<StudyControlsProps> = ({
         <p>
           <kbd className="px-2 py-1 text-xs bg-muted rounded">Space</kbd> to flip • 
           <kbd className="px-2 py-1 text-xs bg-muted rounded mx-1">←</kbd><kbd className="px-2 py-1 text-xs bg-muted rounded">→</kbd> to navigate
-          {isFlipped && (
+          {isFlipped && showAssessmentButtons && (
             <>
               {" • "}
               <kbd className="px-2 py-1 text-xs bg-muted rounded">1</kbd> don't know • 
