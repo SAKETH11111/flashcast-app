@@ -19,6 +19,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY || vars.VITE_GEMINI_API_KEY }}
+      VITE_OPENROUTER_API_KEY: ${{ secrets.VITE_OPENROUTER_API_KEY || vars.VITE_OPENROUTER_API_KEY }}
+      VITE_DEBUG_LOGS: ${{ vars.VITE_DEBUG_LOGS || 'false' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,12 +41,12 @@ jobs:
           yarn install --frozen-lockfile
           yarn add -D @types/node
       
-      - name: Build
-        run: yarn build
-        env:
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
-          VITE_OPENROUTER_API_KEY: ${{ secrets.VITE_OPENROUTER_API_KEY }}
-          VITE_DEBUG_LOGS: ${{ secrets.VITE_DEBUG_LOGS || 'false' }}
+      - name: Verify env and build
+        run: |
+          echo "VITE_GEMINI_API_KEY present? $([ -z \"$VITE_GEMINI_API_KEY\" ] && echo 'no' || echo 'yes')"
+          echo "VITE_OPENROUTER_API_KEY present? $([ -z \"$VITE_OPENROUTER_API_KEY\" ] && echo 'no' || echo 'yes')"
+          if [ -z "$VITE_GEMINI_API_KEY" ]; then echo "VITE_GEMINI_API_KEY is empty. Set it in repo Secrets or Variables." && exit 1; fi
+          yarn build
       
       # Note: GitHub Pages must be manually enabled in repository settings
       # Go to Settings > Pages > Build and deployment > Source > GitHub Actions
