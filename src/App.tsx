@@ -37,7 +37,7 @@ function App() {
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/deck/:deckId" element={<DeckDetailPage />} />
           <Route path="/study/:deckId" element={<StudyPage />} />
-          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signin" element={<Navigate to="/dashboard" replace />} />
           <Route path="/create" element={<Navigate to="/dashboard/create" replace />} />
         </Routes>
       </div>

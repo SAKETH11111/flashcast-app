@@ -69,7 +69,7 @@ function Hero() {
             </div>
             <div className="flex flex-row gap-3 relative z-50 mt-6">
               <button className="button flashcast-btn" onClick={() => {
-                navigate('/signin');
+                navigate('/dashboard');
               }}>
                 Get Started <MoveRight className="inline-block w-4 h-4 ml-2" />
               </button>

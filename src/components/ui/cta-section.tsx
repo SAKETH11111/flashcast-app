@@ -17,7 +17,7 @@ export default function CTASection() {
     
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    navigate('/signin');
+    navigate('/dashboard');
     
     setIsLoading(false);
   };
