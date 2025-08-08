@@ -10,7 +10,7 @@ import { TrashPage } from './pages/DashboardPage/components/TrashPage';
 import DashboardLayout from './pages/DashboardPage/DashboardLayout';
 import { Particles } from './components/ui/particles';
 import ScrollToTopButton from './components/ui/scroll-to-top-button';
-import { SignInPage } from './components/ui/sign-in-flow-1';
+
 import LandingPage from './pages/LandingPage';
 
 function App() {
